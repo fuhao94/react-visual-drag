@@ -15,6 +15,9 @@ export const COMPONENT_LIST: ComponentType[] = [
     name: 'r-button',
     label: '按钮',
     props: {},
-    style: {}
+    style: {
+      width: 100,
+      height: 32
+    }
   }
 ];

@@ -11,13 +11,14 @@ interface ContextMenuProps {
 
 const ContextMenu: FC<ContextMenuProps> = ({ prefixCls }) => {
   const { visible, position } = useContext(ContextMenuContext);
-  const { onDestroyComponent } = useContext(ComponentDataContext);
+  const { onDestroyComponent, setIsClickComponent } =
+    useContext(ComponentDataContext);
   return (
     <div
       className={prefixCls}
       style={{ visibility: visible ? 'visible' : 'hidden', ...position }}
     >
-      <ul>
+      <ul onMouseUp={() => setIsClickComponent(true)}>
         {/* <li>复制</li>
         <li>粘贴</li>
         <li>剪切</li> */}

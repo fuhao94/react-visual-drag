@@ -22,7 +22,7 @@ interface EditorProps {
  * @param style
  */
 function getComponentStyle(style: CSSProperties) {
-  return getStyle(style, ['top', 'left', 'width', 'height', 'rotate']);
+  return getStyle(style, ['top', 'left', 'rotate']);
 }
 
 /**

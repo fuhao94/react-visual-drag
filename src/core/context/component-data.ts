@@ -8,8 +8,13 @@ export interface ComponentDataContextType {
   curComponent?: ComponentType;
   setCurComponent?: (value: ComponentType) => void;
   onDestroyComponent?: (index?: number) => void;
+  isClickComponent?: boolean;
+  setIsClickComponent: (value: boolean) => void;
 }
 
-const Context = createContext<ComponentDataContextType>({ dataSource: [] });
+const Context = createContext<ComponentDataContextType>({
+  dataSource: [],
+  setIsClickComponent: () => {}
+});
 
 export default Context;

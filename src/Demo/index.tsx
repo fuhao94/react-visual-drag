@@ -22,6 +22,7 @@ interface DemoProps {
 const Demo: FC<DemoProps> = ({ prefixCls }) => {
   const [dataSource, setDataSource] = useState<ComponentType[]>([]);
   const [curComponent, setCurComponent] = useState<ComponentType>();
+  const [isClickComponent, setIsClickComponent] = useState(false);
 
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState<ContextMenuPosition>({
@@ -55,6 +56,10 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
   };
 
   const onMouseUp: DragEventMethod = e => {
+    if (!isClickComponent) {
+      setCurComponent(undefined);
+    }
+
     if (e.button !== 2) {
       setVisible(false);
     }
@@ -85,7 +90,9 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
           curComponent,
           setCurComponent,
           onShapeMove,
-          onDestroyComponent
+          onDestroyComponent,
+          isClickComponent,
+          setIsClickComponent
         }}
       >
         <Toolbar onReload={() => setDataSource([])} />
@@ -99,6 +106,7 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
               onDrop={onDrop}
               onDragOver={onDragOver}
               onMouseUp={onMouseUp}
+              onMouseDown={() => setIsClickComponent(false)}
             >
               <ContextMenuContext.Provider
                 value={{ visible, setVisible, position, setPosition }}
