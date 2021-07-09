@@ -18,9 +18,9 @@ const ContextMenu: FC<ContextMenuProps> = ({ prefixCls }) => {
       style={{ visibility: visible ? 'visible' : 'hidden', ...position }}
     >
       <ul>
-        <li>复制</li>
+        {/* <li>复制</li>
         <li>粘贴</li>
-        <li>剪切</li>
+        <li>剪切</li> */}
         <li onClick={() => onDestroyComponent?.()}>删除</li>
         <li>置顶</li>
         <li>置底</li>
