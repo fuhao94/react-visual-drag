@@ -1,13 +1,13 @@
 import './index.less';
 
 import { Button, Input } from 'antd';
-import React, { CSSProperties, FC, useContext, useRef } from 'react';
+import React, { CSSProperties, FC, useContext } from 'react';
 
 import { ComponentType, MouseEventMethod } from '@/types';
+import { getStyle, transformStyle } from '@/utils';
 
 import ComponentDataContext from '../context/component-data';
 import ContextMenuContext from '../context/context-menu';
-import { getStyle, transformStyle } from '../utils';
 import ContextMenu from './ContextMenu';
 import Grid from './Grid';
 import Shape from './Shape';
@@ -79,6 +79,7 @@ const Editor: FC<EditorProps> = ({ dataSource, prefixCls }) => {
             defaultStyle={component.style}
             style={transformStyle(component.style)}
             setCurComponent={() => setCurComponent?.(component)}
+            component={component}
           >
             {generateComponent(component)}
           </Shape>

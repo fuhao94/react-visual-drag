@@ -6,6 +6,10 @@ export function generateID() {
   return id++;
 }
 
+export function $(selector: string) {
+  return document.querySelector(selector);
+}
+
 export function cloneDeep(obj: any, map = new Map()) {
   if (typeof obj === 'object' && obj !== null) {
     let res: any = Array.isArray(obj) ? [] : {};
@@ -117,4 +121,20 @@ export function getPointStyle(
     left: `${newLeft}px`,
     top: `${newTop}px`
   };
+}
+
+/**
+ * 欺骗 TS 生成 Int 类型样式值
+ * @param style
+ */
+export function fakeTsIntStyle(style: CSSProperties) {
+  return ['width', 'height', 'left', 'top'].reduce(
+    (result: Record<string, number>, key) => {
+      Object.assign(result, {
+        [key]: style[key as keyof CSSProperties] as number
+      });
+      return result;
+    },
+    {}
+  );
 }

@@ -3,8 +3,8 @@ import './index.less';
 import React, { CSSProperties, FC, useState } from 'react';
 
 import { COMPONENT_LIST } from '@/core/data';
-import { cloneDeep, generateID } from '@/core/utils';
 import { ComponentType, DragEventMethod } from '@/types';
+import { cloneDeep, generateID } from '@/utils';
 
 import BaseComponents from '../core/BaseComponents';
 import ComponentDataContext from '../core/context/component-data';
@@ -30,7 +30,7 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
     top: 0
   });
 
-  const onShapeMove = (pos: CSSProperties, index: number) => {
+  const onComponentStyleChange = (pos: CSSProperties, index: number) => {
     const newComponents = [...dataSource];
     Object.assign(newComponents[index], { style: pos });
     setDataSource(newComponents);
@@ -89,7 +89,7 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
           dataSource,
           curComponent,
           setCurComponent,
-          onShapeMove,
+          onComponentStyleChange,
           onDestroyComponent,
           isClickComponent,
           setIsClickComponent

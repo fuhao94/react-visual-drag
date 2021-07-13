@@ -4,7 +4,7 @@ import { ComponentType } from '@/types';
 
 export interface ComponentDataContextType {
   dataSource: ComponentType[];
-  onShapeMove?: (pos: CSSProperties, index: number) => void;
+  onComponentStyleChange?: (pos: CSSProperties, index: number) => void;
   curComponent?: ComponentType;
   setCurComponent?: (value: ComponentType) => void;
   onDestroyComponent?: (index?: number) => void;
