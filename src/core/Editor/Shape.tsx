@@ -26,7 +26,6 @@ interface ShapeProps {
   component: ComponentType;
   style: CSSProperties;
   defaultStyle: CSSProperties;
-  setCurComponent: () => void;
 }
 
 // 8个光标点
@@ -46,34 +45,40 @@ const Shape: FC<ShapeProps> = ({
   index,
   defaultStyle,
   prefixCls,
-  setCurComponent,
   component,
   children
 }) => {
-  const { onComponentStyleChange, setIsClickComponent, curComponent } =
+  const { componentState, componentDispatch } =
     useContext(ComponentDataContext);
   const { setVisible } = useContext(ContextMenuContext);
+  const { curComponent } = componentState;
+
   // 画布的实例
   const editorRef = useRef($('#editor'));
 
   const onShapeMouseDown: DragEventMethod = e => {
     e.stopPropagation();
-    setIsClickComponent(true);
-    setCurComponent();
+    componentDispatch({ type: 'setClick', payload: true });
+    componentDispatch({ type: 'setCurComponent', payload: component });
 
     const pos = { ...defaultStyle };
+    // 拖拽起点的 xy 坐标
     const startY = e.clientY;
     const startX = e.clientX;
-
+    // 组件开始 xy 坐标
     const startTop = Number(pos.top);
     const startLeft = Number(pos.left);
 
     const move = (moveEvent: any) => {
       const currX = moveEvent.clientX;
       const currY = moveEvent.clientY;
+      // 当前最新的 xy 坐标减去最开始的 xy 坐标，加上起始位置 xy 坐标
       pos.top = currY - startY + startTop;
       pos.left = currX - startX + startLeft;
-      onComponentStyleChange?.(pos, index);
+      componentDispatch({
+        type: 'setComponentStyle',
+        payload: { style: pos, index }
+      });
     };
 
     const up = () => {
@@ -97,7 +102,7 @@ const Shape: FC<ShapeProps> = ({
     point: PointPosType,
     e: MouseEvent<HTMLDivElement>
   ) => {
-    setIsClickComponent(true);
+    componentDispatch({ type: 'setClick', payload: true });
 
     e.stopPropagation();
     e.preventDefault();
@@ -153,7 +158,10 @@ const Shape: FC<ShapeProps> = ({
           symmetricPoint
         }
       );
-      onComponentStyleChange?.(style, index);
+      componentDispatch({
+        type: 'setComponentStyle',
+        payload: { style, index }
+      });
     };
 
     const up = () => {
@@ -192,7 +200,10 @@ const Shape: FC<ShapeProps> = ({
       pos.width = newWidth > 0 ? newWidth : 0;
       pos.left = left + (hasL ? disX : 0);
       pos.top = top + (hasT ? disY : 0);
-      onComponentStyleChange?.(pos, index);
+      componentDispatch({
+        type: 'setComponentStyle',
+        payload: { style: pos, index }
+      });
     };
 
     const up = () => {

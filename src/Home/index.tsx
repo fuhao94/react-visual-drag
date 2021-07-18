@@ -1,6 +1,6 @@
 import './index.less';
 
-import React, { CSSProperties, FC, useState } from 'react';
+import React, { CSSProperties, FC, useReducer, useState } from 'react';
 
 import { COMPONENT_LIST } from '@/core/data';
 import { ComponentType, DragEventMethod } from '@/types';
@@ -13,6 +13,7 @@ import ContextMenuContext, {
 } from '../core/context/context-menu';
 import Editor from '../core/Editor';
 import Property from '../core/Property';
+import componentReducer from '../core/reducer/component-data';
 import Toolbar from '../core/Toolbar';
 
 interface DemoProps {
@@ -20,21 +21,17 @@ interface DemoProps {
 }
 
 const Demo: FC<DemoProps> = ({ prefixCls }) => {
-  const [dataSource, setDataSource] = useState<ComponentType[]>([]);
-  const [curComponent, setCurComponent] = useState<ComponentType>();
-  const [isClickComponent, setIsClickComponent] = useState(false);
-
   const [visible, setVisible] = useState(false);
   const [position, setPosition] = useState<ContextMenuPosition>({
     left: 0,
     top: 0
   });
-
-  const onComponentStyleChange = (pos: CSSProperties, index: number) => {
-    const newComponents = [...dataSource];
-    Object.assign(newComponents[index], { style: pos });
-    setDataSource(newComponents);
-  };
+  const [componentState, componentDispatch] = useReducer(componentReducer, {
+    componentData: [],
+    isClickComponent: false,
+    snapshots: [],
+    snapshotIndex: 0
+  });
 
   const onDrop: DragEventMethod = e => {
     e.preventDefault();
@@ -42,11 +39,13 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
     const component = cloneDeep(
       COMPONENT_LIST[Number(e.dataTransfer.getData('index'))]
     );
-    // FIXME 落地的位置有偏差(猜测是计算的距离是根据中心点算的)
     component.style.top = e.nativeEvent.offsetY;
     component.style.left = e.nativeEvent.offsetX;
     component.id = generateID();
-    setDataSource(prev => [component, ...prev]);
+    componentDispatch({
+      type: 'setComponentData',
+      payload: [...componentState.componentData, component]
+    });
   };
 
   const onDragOver: DragEventMethod = e => {
@@ -56,8 +55,8 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
   };
 
   const onMouseUp: DragEventMethod = e => {
-    if (!isClickComponent) {
-      setCurComponent(undefined);
+    if (!componentState.isClickComponent) {
+      componentDispatch({ type: 'setCurComponent', payload: undefined });
     }
 
     if (e.button !== 2) {
@@ -65,37 +64,15 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
     }
   };
 
-  const onDestroyComponent = (index?: number) => {
-    const newData = [...dataSource];
-
-    let curIndex = index;
-
-    if (curIndex === undefined) {
-      curIndex = newData.findIndex(
-        component => component.id === curComponent?.id
-      );
-    }
-
-    if (curIndex > -1) {
-      newData.splice(curIndex, 1);
-      setDataSource(newData);
-    }
-  };
-
   return (
     <div className={prefixCls}>
       <ComponentDataContext.Provider
         value={{
-          dataSource,
-          curComponent,
-          setCurComponent,
-          onComponentStyleChange,
-          onDestroyComponent,
-          isClickComponent,
-          setIsClickComponent
+          componentState,
+          componentDispatch
         }}
       >
-        <Toolbar onReload={() => setDataSource([])} />
+        <Toolbar />
         <div className={`${prefixCls}-content`}>
           <div className={`${prefixCls}-content-left`}>
             <BaseComponents />
@@ -106,12 +83,14 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
               onDrop={onDrop}
               onDragOver={onDragOver}
               onMouseUp={onMouseUp}
-              onMouseDown={() => setIsClickComponent(false)}
+              onMouseDown={() =>
+                componentDispatch({ type: 'setClick', payload: false })
+              }
             >
               <ContextMenuContext.Provider
                 value={{ visible, setVisible, position, setPosition }}
               >
-                <Editor dataSource={dataSource} />
+                <Editor />
               </ContextMenuContext.Provider>
             </div>
           </div>

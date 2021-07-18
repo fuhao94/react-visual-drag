@@ -7,9 +7,16 @@ interface PropertyProps {
 }
 
 const Property: FC<PropertyProps> = ({ prefixCls }) => {
-  const { curComponent } = useContext(ComponentDataContext);
+  const { componentState } = useContext(ComponentDataContext);
 
-  return <div className={prefixCls}>{JSON.stringify(curComponent?.style)}</div>;
+  return (
+    <div className={prefixCls}>
+      {JSON.stringify(componentState.curComponent?.style)}
+      <br />
+      <br />
+      {JSON.stringify(componentState?.snapshots)}
+    </div>
+  );
 };
 
 Property.defaultProps = {

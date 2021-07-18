@@ -14,7 +14,6 @@ import Shape from './Shape';
 
 interface EditorProps {
   prefixCls?: string;
-  dataSource: ComponentType[];
 }
 
 /**
@@ -30,21 +29,20 @@ function getComponentStyle(style: CSSProperties) {
  * @param component
  */
 function generateComponent(component: ComponentType) {
-  const style = getComponentStyle(component.style);
+  const props = {
+    ...component.props,
+    style: getComponentStyle(component.style)
+  };
   switch (component.name) {
     case 'r-button':
-      return (
-        <Button {...component.props} style={style}>
-          {component.label}
-        </Button>
-      );
+      return <Button {...props}>{component.label}</Button>;
     case 'r-input':
-      return <Input {...component.props} style={style} />;
+      return <Input {...props} />;
   }
 }
 
-const Editor: FC<EditorProps> = ({ dataSource, prefixCls }) => {
-  const { setCurComponent } = useContext(ComponentDataContext);
+const Editor: FC<EditorProps> = ({ prefixCls }) => {
+  const { componentState } = useContext(ComponentDataContext);
   const { setVisible, setPosition } = useContext(ContextMenuContext);
 
   const onContextMenu: MouseEventMethod = e => {
@@ -71,14 +69,13 @@ const Editor: FC<EditorProps> = ({ dataSource, prefixCls }) => {
     <div className={prefixCls} id="editor" onContextMenu={onContextMenu}>
       <Grid />
 
-      {dataSource.map((component, index) => {
+      {componentState.componentData.map((component, index) => {
         return (
           <Shape
             key={component.id}
             index={index}
             defaultStyle={component.style}
             style={transformStyle(component.style)}
-            setCurComponent={() => setCurComponent?.(component)}
             component={component}
           >
             {generateComponent(component)}

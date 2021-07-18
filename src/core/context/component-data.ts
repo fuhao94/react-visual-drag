@@ -1,20 +1,26 @@
 import { createContext, CSSProperties } from 'react';
 
-import { ComponentType } from '@/types';
+import {
+  ComponentDataReducerAction,
+  ComponentDataReducerState
+} from '../reducer/component-data';
 
 export interface ComponentDataContextType {
-  dataSource: ComponentType[];
-  onComponentStyleChange?: (pos: CSSProperties, index: number) => void;
-  curComponent?: ComponentType;
-  setCurComponent?: (value: ComponentType) => void;
-  onDestroyComponent?: (index?: number) => void;
-  isClickComponent?: boolean;
-  setIsClickComponent: (value: boolean) => void;
+  componentState: ComponentDataReducerState;
+  componentDispatch: ({
+    type,
+    payload
+  }: ComponentDataReducerAction<ComponentDataReducerState>) => void;
 }
 
 const Context = createContext<ComponentDataContextType>({
-  dataSource: [],
-  setIsClickComponent: () => {}
+  componentDispatch: () => {},
+  componentState: {
+    componentData: [],
+    isClickComponent: false,
+    snapshots: [],
+    snapshotIndex: 0
+  }
 });
 
 export default Context;
