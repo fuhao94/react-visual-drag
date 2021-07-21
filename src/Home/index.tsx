@@ -1,9 +1,9 @@
 import './index.less';
 
-import React, { FC, useReducer, useState } from 'react';
+import React, { FC, useReducer } from 'react';
 
 import { COMPONENT_LIST } from '@/core/data';
-import { ContextMenuPosition, DragEventMethod } from '@/types';
+import { DragEventMethod } from '@/types';
 import { cloneDeep, generateID } from '@/utils';
 
 import BaseComponents from '../core/BaseComponents';
@@ -30,6 +30,7 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
     visible: false,
     position: { left: 0, top: 0 }
   });
+  const { componentData, isClickComponent } = componentState;
 
   const onDrop: DragEventMethod = e => {
     e.preventDefault();
@@ -42,7 +43,7 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
     component.id = generateID();
     componentDispatch({
       type: 'setComponentData',
-      payload: [...componentState.componentData, component]
+      payload: [...componentData, component]
     });
   };
 
@@ -53,10 +54,12 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
   };
 
   const onMouseUp: DragEventMethod = e => {
-    if (!componentState.isClickComponent) {
-      componentDispatch({ type: 'setCurComponent', payload: undefined });
+    if (!isClickComponent) {
+      // FIXME 需要先执行右键操作再取消选择组件 被迫来个异步操作
+      setTimeout(() => {
+        componentDispatch({ type: 'setCurComponent', payload: undefined });
+      }, 0);
     }
-
     if (e.button !== 2) {
       menuDispatch({ type: 'hide' });
     }

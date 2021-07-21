@@ -40,40 +40,39 @@ export default function reducer(
   state: ComponentDataReducerState,
   action: ComponentDataReducerAction
 ) {
-  const newState = { ...state };
-  const { type, payload } = action;
-  switch (type) {
+  switch (action.type) {
     case 'setComponentData': {
-      return { ...newState, componentData: payload };
+      return { ...state, componentData: action.payload };
     }
     case 'setComponentStyle': {
-      const { style, index } = payload;
-      const newComponents = [...newState.componentData];
+      const { style, index } = action.payload;
+      const newComponents = [...state.componentData];
       Object.assign(newComponents[index], { style });
-      return { ...newState, componentData: newComponents };
+      return { ...state, componentData: newComponents };
     }
     case 'destroyComponent': {
-      const newComponents = [...newState.componentData];
-      let curIndex = payload;
+      const newComponents = [...state.componentData];
+      let curIndex = action.payload;
       if (curIndex === undefined) {
         curIndex = newComponents.findIndex(
-          component => component.id === newState.curComponent?.id
+          component => component.id === state.curComponent?.id
         );
       }
       if (curIndex > -1) {
         newComponents.splice(curIndex, 1);
       }
-      return { ...newState, componentData: newComponents };
+      return { ...state, componentData: newComponents };
     }
     case 'setCurComponent':
-      return { ...newState, curComponent: payload };
+      return { ...state, curComponent: action.payload };
     case 'setClick':
-      return { ...newState, isClickComponent: payload };
+      return { ...state, isClickComponent: action.payload };
     case 'undo':
     case 'redo':
       return { ...state, componentData: [], snapshots: [], snapshotIndex: 0 };
-    case 'recordSnapshot':
-      newState.snapshots[newState.snapshotIndex++] = payload
+    case 'recordSnapshot': {
+      const newState = { ...state };
+      newState.snapshots[newState.snapshotIndex++] = action.payload
         ?.snapshots?.[0] as ComponentType[];
       // 在 undo 过程中，添加新的快照时，要将它后面的快照清理掉
       if (newState.snapshotIndex < newState.snapshots.length - 1) {
@@ -83,6 +82,7 @@ export default function reducer(
         );
       }
       return newState;
+    }
     default:
       throw new Error();
   }

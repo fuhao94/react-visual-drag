@@ -61,8 +61,8 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
       top += target.offsetTop;
       target = target.parentNode;
     }
-    menuDispatch({ type: 'setPosition', payload: { left, top } });
     menuDispatch({ type: 'show' });
+    menuDispatch({ type: 'setPosition', payload: { left, top } });
   };
 
   return (
@@ -83,7 +83,6 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
         );
       })}
 
-      {/* 右键菜单 */}
       <ContextMenu />
     </div>
   );

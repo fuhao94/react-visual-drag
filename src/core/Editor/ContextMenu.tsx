@@ -22,9 +22,9 @@ const ContextMenu: FC<ContextMenuProps> = ({ prefixCls }) => {
       <ul
         onMouseUp={() => componentDispatch({ type: 'setClick', payload: true })}
       >
-        {/* <li>复制</li>
+        <li>复制</li>
         <li>粘贴</li>
-        <li>剪切</li> */}
+        <li>剪切</li>
         <li onClick={() => componentDispatch({ type: 'destroyComponent' })}>
           删除
         </li>
