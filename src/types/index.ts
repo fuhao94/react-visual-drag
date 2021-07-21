@@ -17,6 +17,11 @@ export interface ComponentType {
   style: CSSProperties;
 }
 
+export interface ContextMenuPosition {
+  top: number;
+  left: number;
+}
+
 export type PointPosType = 'lt' | 't' | 'rt' | 'r' | 'rb' | 'b' | 'lb' | 'l';
 
 export type DragEventMethod = (e: DragEvent<HTMLDivElement> | any) => void;

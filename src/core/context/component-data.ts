@@ -7,10 +7,7 @@ import {
 
 export interface ComponentDataContextType {
   componentState: ComponentDataReducerState;
-  componentDispatch: ({
-    type,
-    payload
-  }: ComponentDataReducerAction<ComponentDataReducerState>) => void;
+  componentDispatch: ({ type, payload }: ComponentDataReducerAction) => void;
 }
 
 const Context = createContext<ComponentDataContextType>({

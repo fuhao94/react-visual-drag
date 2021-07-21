@@ -50,7 +50,7 @@ const Shape: FC<ShapeProps> = ({
 }) => {
   const { componentState, componentDispatch } =
     useContext(ComponentDataContext);
-  const { setVisible } = useContext(ContextMenuContext);
+  const { menuDispatch } = useContext(ContextMenuContext);
   const { curComponent } = componentState;
 
   // 画布的实例
@@ -95,7 +95,7 @@ const Shape: FC<ShapeProps> = ({
     e.stopPropagation();
     e.preventDefault();
     // 关闭右键菜单
-    setVisible(false);
+    menuDispatch({ type: 'hide' });
   };
 
   const onPointMouseDown = (

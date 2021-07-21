@@ -10,8 +10,10 @@ interface ContextMenuProps {
 }
 
 const ContextMenu: FC<ContextMenuProps> = ({ prefixCls }) => {
-  const { visible, position } = useContext(ContextMenuContext);
   const { componentDispatch } = useContext(ComponentDataContext);
+  const { menuState } = useContext(ContextMenuContext);
+  const { visible, position } = menuState;
+
   return (
     <div
       className={prefixCls}

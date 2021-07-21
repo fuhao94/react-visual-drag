@@ -1,19 +1,18 @@
 import './index.less';
 
-import React, { CSSProperties, FC, useReducer, useState } from 'react';
+import React, { FC, useReducer, useState } from 'react';
 
 import { COMPONENT_LIST } from '@/core/data';
-import { ComponentType, DragEventMethod } from '@/types';
+import { ContextMenuPosition, DragEventMethod } from '@/types';
 import { cloneDeep, generateID } from '@/utils';
 
 import BaseComponents from '../core/BaseComponents';
 import ComponentDataContext from '../core/context/component-data';
-import ContextMenuContext, {
-  ContextMenuPosition
-} from '../core/context/context-menu';
+import ContextMenuContext from '../core/context/context-menu';
 import Editor from '../core/Editor';
 import Property from '../core/Property';
 import componentReducer from '../core/reducer/component-data';
+import contextReducer from '../core/reducer/context-menu';
 import Toolbar from '../core/Toolbar';
 
 interface DemoProps {
@@ -21,16 +20,15 @@ interface DemoProps {
 }
 
 const Demo: FC<DemoProps> = ({ prefixCls }) => {
-  const [visible, setVisible] = useState(false);
-  const [position, setPosition] = useState<ContextMenuPosition>({
-    left: 0,
-    top: 0
-  });
   const [componentState, componentDispatch] = useReducer(componentReducer, {
     componentData: [],
     isClickComponent: false,
     snapshots: [],
     snapshotIndex: 0
+  });
+  const [menuState, menuDispatch] = useReducer(contextReducer, {
+    visible: false,
+    position: { left: 0, top: 0 }
   });
 
   const onDrop: DragEventMethod = e => {
@@ -60,7 +58,7 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
     }
 
     if (e.button !== 2) {
-      setVisible(false);
+      menuDispatch({ type: 'hide' });
     }
   };
 
@@ -87,9 +85,7 @@ const Demo: FC<DemoProps> = ({ prefixCls }) => {
                 componentDispatch({ type: 'setClick', payload: false })
               }
             >
-              <ContextMenuContext.Provider
-                value={{ visible, setVisible, position, setPosition }}
-              >
+              <ContextMenuContext.Provider value={{ menuState, menuDispatch }}>
                 <Editor />
               </ContextMenuContext.Provider>
             </div>

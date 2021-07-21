@@ -43,7 +43,7 @@ function generateComponent(component: ComponentType) {
 
 const Editor: FC<EditorProps> = ({ prefixCls }) => {
   const { componentState } = useContext(ComponentDataContext);
-  const { setVisible, setPosition } = useContext(ContextMenuContext);
+  const { menuDispatch } = useContext(ContextMenuContext);
 
   const onContextMenu: MouseEventMethod = e => {
     e.stopPropagation();
@@ -61,8 +61,8 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
       top += target.offsetTop;
       target = target.parentNode;
     }
-    setVisible(true);
-    setPosition({ left, top });
+    menuDispatch({ type: 'setPosition', payload: { left, top } });
+    menuDispatch({ type: 'show' });
   };
 
   return (

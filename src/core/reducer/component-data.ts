@@ -20,7 +20,7 @@ export type ComponentDataReducerActionType =
   | 'redo'
   | 'recordSnapshot';
 
-export interface ComponentDataReducerAction<K, T extends keyof K = keyof K> {
+export interface ComponentDataReducerAction {
   type: ComponentDataReducerActionType;
   payload?: any;
 }
@@ -38,7 +38,7 @@ export interface ComponentDataReducerState {
 
 export default function reducer(
   state: ComponentDataReducerState,
-  action: ComponentDataReducerAction<ComponentDataReducerState>
+  action: ComponentDataReducerAction
 ) {
   const newState = { ...state };
   const { type, payload } = action;
