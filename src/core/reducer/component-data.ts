@@ -82,7 +82,6 @@ export default function reducer(
       const newState = { ...state };
       newState.snapshots[++newState.snapshotIndex] = payload
         ?.snapshots?.[0] as ComponentType[];
-      console.log(newState.snapshotIndex);
 
       // 在 undo 过程中，添加新的快照时，要将它后面的快照清理掉
       if (newState.snapshotIndex < newState.snapshots.length - 1) {

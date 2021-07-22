@@ -15,6 +15,12 @@ const textAlignOptions = [
 
 export const propertyConfigs = [
   {
+    name: 'label',
+    label: '内容',
+    componentName: 'input',
+    props: {}
+  },
+  {
     name: 'opacity',
     label: '透明度',
     componentName: 'input',

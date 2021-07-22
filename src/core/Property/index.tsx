@@ -1,5 +1,5 @@
-import { Form, Input, Select, Tabs } from 'antd';
-import { debounce, find, map } from 'lodash-es';
+import { Card, Form, Input, Select, Tabs } from 'antd';
+import { debounce, find, join, map } from 'lodash-es';
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 
 import { TObj } from '@/types';
@@ -22,7 +22,8 @@ const initialValues = {
   fontWeight: undefined,
   lineHeight: undefined,
   letterSpace: undefined,
-  textAlign: undefined
+  textAlign: undefined,
+  label: undefined
 };
 
 const renderFormItem = map(propertyConfigs, config => {
@@ -44,7 +45,7 @@ const renderFormItem = map(propertyConfigs, config => {
 
 const Property: FC<PropertyProps> = ({ prefixCls }) => {
   const { componentState } = useContext(ComponentDataContext);
-  const { curComponentId, componentData } = componentState;
+  const { curComponentId, componentData, snapshots } = componentState;
   const [initial, setInitial] = useState<Record<string, any>>(initialValues);
   const [form] = Form.useForm();
   const firstRenderRef = useRef(true);
@@ -55,7 +56,11 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
     let curComponentStyle: TObj = initialValues;
     if (curComponentId > -1) {
       const curComponent = find(componentData, ['id', curComponentId]);
-      if (curComponent) curComponentStyle = curComponent.style;
+      if (curComponent)
+        curComponentStyle = {
+          ...curComponent.style,
+          label: curComponent.label
+        };
     }
     setInitial(curComponentStyle);
   }, [curComponentId, componentData]);
@@ -80,15 +85,16 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
           >
             {renderFormItem}
           </Form>
-
-          <span>当前组件索引：{curComponentId}</span>
         </TabPane>
         <TabPane tab="快照" key="animation">
-          <span>
-            {JSON.stringify(
-              map(componentState.snapshots, snap => snap.map(com => com.id))
-            )}
-          </span>
+          {map(snapshots, (snapshot, index) => {
+            const names = join(map(snapshot, 'id'), ',');
+            return (
+              <Card key={`${index}`} title={`第 ${index + 1} 步`}>
+                ids: {names}
+              </Card>
+            );
+          })}
         </TabPane>
         <TabPane tab="事件" key="event">
           事件
