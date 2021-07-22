@@ -1,6 +1,7 @@
 import './index.less';
 
 import { Button, Input } from 'antd';
+import { map } from 'lodash-es';
 import React, { CSSProperties, FC, useContext } from 'react';
 
 import { ComponentType, MouseEventMethod } from '@/types';
@@ -69,7 +70,7 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
     <div className={prefixCls} id="editor" onContextMenu={onContextMenu}>
       <Grid />
 
-      {componentState.componentData.map((component, index) => {
+      {map(componentState.componentData, (component, index) => {
         return (
           <Shape
             key={component.id}

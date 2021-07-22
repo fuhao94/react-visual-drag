@@ -43,7 +43,9 @@ const Toolbar: FC<ToolbarProps> = ({
   /**
    * 撤销事件处理
    */
-  const onUndo = () => {};
+  const onUndo = () => {
+    componentDispatch({ type: 'undo' });
+  };
 
   return (
     <header className={prefixCls}>

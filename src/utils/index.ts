@@ -10,28 +10,6 @@ export function $(selector: string) {
   return document.querySelector(selector);
 }
 
-export function cloneDeep(obj: any, map = new Map()) {
-  if (typeof obj === 'object' && obj !== null) {
-    let res: any = Array.isArray(obj) ? [] : {};
-    const symbols = Object.getOwnPropertySymbols(obj);
-    if (symbols.length > 0) {
-      symbols.forEach(sym => {
-        res[sym] = obj[sym];
-      });
-    }
-    if (map.get(obj)) {
-      return map.get(obj);
-    }
-    Object.keys(obj).forEach(key => {
-      res[key] = cloneDeep(obj[key], map);
-    });
-    map.set(obj, res);
-    return res;
-  } else {
-    return obj;
-  }
-}
-
 /**
  * 给样式添加单位
  * @param style

@@ -14,7 +14,7 @@ export type ComponentDataReducerActionType =
   | 'setComponentData'
   | 'setComponentStyle'
   | 'destroyComponent'
-  | 'setCurComponent'
+  | 'setCurComponentId'
   | 'setClick'
   | 'undo'
   | 'redo'
@@ -28,8 +28,8 @@ export interface ComponentDataReducerAction {
 export interface ComponentDataReducerState {
   /** 数据源 */
   componentData: ComponentType[];
-  /** 当前组件 */
-  curComponent?: ComponentType;
+  /** 当前组件索引 */
+  curComponentId: number;
   /** 是否是 active 组件 */
   isClickComponent: boolean;
   snapshots: ComponentType[][];
@@ -40,40 +40,50 @@ export default function reducer(
   state: ComponentDataReducerState,
   action: ComponentDataReducerAction
 ) {
-  switch (action.type) {
+  const { type, payload } = action;
+  switch (type) {
     case 'setComponentData': {
-      return { ...state, componentData: action.payload };
+      return { ...state, componentData: payload };
     }
     case 'setComponentStyle': {
-      const { style, index } = action.payload;
+      const { style, index } = payload;
       const newComponents = [...state.componentData];
       Object.assign(newComponents[index], { style });
       return { ...state, componentData: newComponents };
     }
     case 'destroyComponent': {
       const newComponents = [...state.componentData];
-      let curIndex = action.payload;
+      let curIndex = payload;
       if (curIndex === undefined) {
-        curIndex = newComponents.findIndex(
-          component => component.id === state.curComponent?.id
-        );
+        curIndex = state.curComponentId;
       }
       if (curIndex > -1) {
         newComponents.splice(curIndex, 1);
       }
       return { ...state, componentData: newComponents };
     }
-    case 'setCurComponent':
-      return { ...state, curComponent: action.payload };
+    case 'setCurComponentId':
+      return {
+        ...state,
+        curComponentId: payload
+      };
     case 'setClick':
-      return { ...state, isClickComponent: action.payload };
-    case 'undo':
+      return { ...state, isClickComponent: payload };
+    case 'undo': {
+      const newState = { ...state };
+      // 撤销回最开始时候是原始值 []
+      newState.componentData =
+        newState.snapshots[--newState.snapshotIndex] || [];
+      return newState;
+    }
     case 'redo':
       return { ...state, componentData: [], snapshots: [], snapshotIndex: 0 };
     case 'recordSnapshot': {
       const newState = { ...state };
-      newState.snapshots[newState.snapshotIndex++] = action.payload
+      newState.snapshots[++newState.snapshotIndex] = payload
         ?.snapshots?.[0] as ComponentType[];
+      console.log(newState.snapshotIndex);
+
       // 在 undo 过程中，添加新的快照时，要将它后面的快照清理掉
       if (newState.snapshotIndex < newState.snapshots.length - 1) {
         newState.snapshots = newState.snapshots.slice(

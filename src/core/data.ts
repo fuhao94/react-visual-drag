@@ -1,7 +1,11 @@
-// // 公共样式
+import { map } from 'lodash-es';
+
+// 公共样式
 export const commonStyle = {
   rotate: 0,
-  opacity: 1
+  opacity: 1,
+  top: 0,
+  left: 0
 };
 
 export const COMPONENT_LIST = (() => {
@@ -28,7 +32,9 @@ export const COMPONENT_LIST = (() => {
     }
   ];
 
-  return baseConfig.map(config => ({
+  return map(baseConfig, config => ({
+    // 未创建的ID
+    id: -1,
     ...config,
     style: { ...config.style, ...commonStyle }
   }));

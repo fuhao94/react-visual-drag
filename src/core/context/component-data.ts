@@ -1,4 +1,4 @@
-import { createContext, CSSProperties } from 'react';
+import { createContext } from 'react';
 
 import {
   ComponentDataReducerAction,
@@ -16,7 +16,8 @@ const Context = createContext<ComponentDataContextType>({
     componentData: [],
     isClickComponent: false,
     snapshots: [],
-    snapshotIndex: 0
+    snapshotIndex: -1,
+    curComponentId: -1
   }
 });
 

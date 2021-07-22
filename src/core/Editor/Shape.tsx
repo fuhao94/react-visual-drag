@@ -1,5 +1,6 @@
 import './index.less';
 
+import { map } from 'lodash-es';
 import React, {
   CSSProperties,
   FC,
@@ -51,7 +52,7 @@ const Shape: FC<ShapeProps> = ({
   const { componentState, componentDispatch } =
     useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
-  const { curComponent } = componentState;
+  const { curComponentId } = componentState;
 
   // 画布的实例
   const editorRef = useRef($('#editor'));
@@ -59,7 +60,7 @@ const Shape: FC<ShapeProps> = ({
   const onShapeMouseDown: DragEventMethod = e => {
     e.stopPropagation();
     componentDispatch({ type: 'setClick', payload: true });
-    componentDispatch({ type: 'setCurComponent', payload: component });
+    componentDispatch({ type: 'setCurComponentId', payload: component.id });
 
     const pos = { ...defaultStyle };
     // 拖拽起点的 xy 坐标
@@ -218,7 +219,7 @@ const Shape: FC<ShapeProps> = ({
   const shapePointEl = () => {
     const width = defaultStyle.width as number;
     const height = defaultStyle.height as number;
-    return SHAPE_POINTS.map(point => {
+    return map(SHAPE_POINTS, point => {
       return (
         <div
           className={`${prefixCls}-point`}
@@ -237,7 +238,7 @@ const Shape: FC<ShapeProps> = ({
       onClick={onShapeClick}
       onMouseDown={onShapeMouseDown}
     >
-      {curComponent === component && shapePointEl()}
+      {curComponentId === component.id && shapePointEl()}
       {children}
     </div>
   );

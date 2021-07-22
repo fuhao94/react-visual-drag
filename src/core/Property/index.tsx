@@ -1,5 +1,8 @@
 import { Form, Input, Select, Tabs } from 'antd';
+import { debounce, find, map } from 'lodash-es';
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
+
+import { TObj } from '@/types';
 
 import ComponentDataContext from '../context/component-data';
 import { propertyConfigs } from './data';
@@ -22,7 +25,7 @@ const initialValues = {
   textAlign: undefined
 };
 
-const renderFormItem = propertyConfigs.map(config => {
+const renderFormItem = map(propertyConfigs, config => {
   const { componentName, props, ...restProps } = config;
   let component;
   switch (componentName) {
@@ -41,28 +44,34 @@ const renderFormItem = propertyConfigs.map(config => {
 
 const Property: FC<PropertyProps> = ({ prefixCls }) => {
   const { componentState } = useContext(ComponentDataContext);
-  const { curComponent } = componentState;
+  const { curComponentId, componentData } = componentState;
   const [initial, setInitial] = useState<Record<string, any>>(initialValues);
   const [form] = Form.useForm();
   const firstRenderRef = useRef(true);
 
+  const reset = debounce(form.resetFields, 300);
+
   useEffect(() => {
-    setInitial(curComponent ? curComponent.style : initialValues);
-  }, [curComponent]);
+    let curComponentStyle: TObj = initialValues;
+    if (curComponentId > -1) {
+      const curComponent = find(componentData, ['id', curComponentId]);
+      if (curComponent) curComponentStyle = curComponent.style;
+    }
+    setInitial(curComponentStyle);
+  }, [curComponentId, componentData]);
 
   useEffect(() => {
     if (firstRenderRef.current) {
       firstRenderRef.current = false;
       return;
     }
-    console.log('render');
-    form.resetFields();
+    reset();
   }, [initial]);
 
   return (
     <div className={prefixCls}>
-      <Tabs>
-        <TabPane tab="属性" key="property">
+      <Tabs defaultActiveKey="property">
+        <TabPane forceRender tab="属性" key="property">
           <Form
             colon={false}
             form={form}
@@ -71,21 +80,20 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
           >
             {renderFormItem}
           </Form>
+
+          <span>当前组件索引：{curComponentId}</span>
         </TabPane>
-        <TabPane tab="动画" key="animation">
-          动画
+        <TabPane tab="快照" key="animation">
+          <span>
+            {JSON.stringify(
+              map(componentState.snapshots, snap => snap.map(com => com.id))
+            )}
+          </span>
         </TabPane>
         <TabPane tab="事件" key="event">
           事件
         </TabPane>
       </Tabs>
-
-      <span>当前组件ID：{componentState.curComponent?.id}</span>
-      <br />
-      <br />
-      {JSON.stringify(
-        componentState.snapshots.map(snap => snap.map(com => com.id))
-      )}
     </div>
   );
 };

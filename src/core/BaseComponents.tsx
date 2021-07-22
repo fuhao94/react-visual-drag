@@ -1,4 +1,5 @@
 import { Button } from 'antd';
+import { map } from 'lodash-es';
 import React, { FC } from 'react';
 
 import { DragEventMethod } from '@/types';
@@ -16,7 +17,7 @@ const BaseComponents: FC = () => {
 
   return (
     <div onDragStart={onDragStart}>
-      {COMPONENT_LIST.map(({ label }, index) => (
+      {map(COMPONENT_LIST, ({ label }, index) => (
         <Button key={label} data-index={index} draggable>
           {label}
         </Button>

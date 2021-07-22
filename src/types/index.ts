@@ -1,5 +1,7 @@
 import { CSSProperties, DragEvent, HTMLAttributes, MouseEvent } from 'react';
 
+export type TObj = Record<string, any>;
+
 export interface ComponentStyle {
   width?: number;
   height?: number;
