@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Col, Row } from 'antd';
 import { map } from 'lodash-es';
 import React, { FC } from 'react';
 
@@ -17,11 +17,19 @@ const BaseComponents: FC = () => {
 
   return (
     <div onDragStart={onDragStart}>
-      {map(COMPONENT_LIST, ({ label }, index) => (
-        <Button key={label} data-index={index} draggable>
-          {label}
-        </Button>
-      ))}
+      <Row>
+        {map(COMPONENT_LIST, ({ label }, index) => (
+          <Col
+            span={10}
+            key={label}
+            style={{ marginBottom: 6, textAlign: 'center' }}
+          >
+            <Button data-index={index} draggable>
+              {label}
+            </Button>
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 };

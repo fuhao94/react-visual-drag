@@ -46,7 +46,8 @@ export function getStyle(style: CSSProperties, filter: string[] = []) {
     'left',
     'borderWidth',
     'letterSpacing',
-    'borderRadius'
+    'borderRadius',
+    'backgroundImage'
   ];
   return Object.keys(style).reduce((result: any, key) => {
     if (!filter.includes(key)) {

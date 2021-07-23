@@ -2,7 +2,7 @@ import './index.less';
 
 import { Button, Input } from 'antd';
 import { map } from 'lodash-es';
-import React, { CSSProperties, FC, useContext } from 'react';
+import React, { CSSProperties, FC, ImgHTMLAttributes, useContext } from 'react';
 
 import { ComponentType, MouseEventMethod } from '@/types';
 import { getStyle, transformStyle } from '@/utils';
@@ -11,6 +11,7 @@ import ComponentDataContext from '../context/component-data';
 import ContextMenuContext from '../context/context-menu';
 import ContextMenu from './ContextMenu';
 import Grid from './Grid';
+import MarkLine from './MarkLine';
 import Shape from './Shape';
 
 interface EditorProps {
@@ -39,12 +40,23 @@ function generateComponent(component: ComponentType) {
       return <Button {...props}>{component.label}</Button>;
     case 'r-input':
       return <Input {...props} />;
+    case 'r-img': {
+      return (
+        <img
+          draggable="false"
+          {...(props as ImgHTMLAttributes<HTMLImageElement>)}
+          alt={component.label}
+        />
+      );
+    }
   }
 }
 
 const Editor: FC<EditorProps> = ({ prefixCls }) => {
   const { componentState } = useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
+
+  const { componentData } = componentState;
 
   const onContextMenu: MouseEventMethod = e => {
     e.stopPropagation();
@@ -70,7 +82,7 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
     <div className={prefixCls} id="editor" onContextMenu={onContextMenu}>
       <Grid />
 
-      {map(componentState.componentData, (component, index) => {
+      {map(componentData, (component, index) => {
         return (
           <Shape
             key={component.id}
@@ -85,6 +97,8 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
       })}
 
       <ContextMenu />
+
+      <MarkLine />
     </div>
   );
 };

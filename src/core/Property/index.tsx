@@ -56,6 +56,7 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
     let curComponentStyle: TObj = initialValues;
     if (curComponentId > -1) {
       const curComponent = find(componentData, ['id', curComponentId]);
+
       if (curComponent)
         curComponentStyle = {
           ...curComponent.style,

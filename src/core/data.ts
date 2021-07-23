@@ -29,6 +29,17 @@ export const COMPONENT_LIST = (() => {
         width: 100,
         height: 32
       }
+    },
+    {
+      name: 'r-img',
+      label: '图片',
+      props: {
+        src: require('@/assets/cat.jpeg').default
+      },
+      style: {
+        width: 114,
+        height: 200
+      }
     }
   ];
 

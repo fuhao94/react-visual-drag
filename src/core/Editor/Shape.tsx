@@ -61,7 +61,6 @@ const Shape: FC<ShapeProps> = ({
     e.stopPropagation();
     componentDispatch({ type: 'setClick', payload: true });
     componentDispatch({ type: 'setCurComponentId', payload: component.id });
-
     const pos = { ...defaultStyle };
     // 拖拽起点的 xy 坐标
     const startY = e.clientY;
@@ -201,6 +200,7 @@ const Shape: FC<ShapeProps> = ({
       pos.width = newWidth > 0 ? newWidth : 0;
       pos.left = left + (hasL ? disX : 0);
       pos.top = top + (hasT ? disY : 0);
+
       componentDispatch({
         type: 'setComponentStyle',
         payload: { style: pos, index }
