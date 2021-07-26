@@ -16,11 +16,11 @@ import componentReducer from '../core/reducer/component-data';
 import contextReducer from '../core/reducer/context-menu';
 import Toolbar from '../core/Toolbar';
 
-interface DemoProps {
+interface HomeProps {
   prefixCls?: string;
 }
 
-const Demo: FC<DemoProps> = ({ prefixCls }) => {
+const Demo: FC<HomeProps> = ({ prefixCls }) => {
   const [componentState, componentDispatch] = useReducer(componentReducer, {
     componentData: [
       {
