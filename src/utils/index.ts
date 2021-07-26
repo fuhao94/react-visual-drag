@@ -60,6 +60,14 @@ export function getStyle(style: CSSProperties, filter: string[] = []) {
 }
 
 /**
+ * 过滤组件样式
+ * @param style
+ */
+export function getComponentStyle(style: CSSProperties) {
+  return getStyle(style, ['top', 'left', 'rotate']);
+}
+
+/**
  * 获取 `点` 的位置
  * @param point
  * @param style

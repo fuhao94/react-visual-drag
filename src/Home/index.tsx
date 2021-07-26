@@ -33,8 +33,8 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
           height: 200,
           rotate: 0,
           opacity: 1,
-          top: 75,
-          left: 257
+          top: 20,
+          left: 100
         }
       },
       {
@@ -47,8 +47,8 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
           height: 32,
           rotate: 0,
           opacity: 1,
-          top: 75,
-          left: 100
+          top: 250,
+          left: 230
         }
       }
     ],

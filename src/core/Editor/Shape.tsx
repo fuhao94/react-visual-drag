@@ -1,12 +1,14 @@
 import './index.less';
 
-import { map } from 'lodash-es';
+import { Button, Input } from 'antd';
+import { debounce, map } from 'lodash-es';
 import React, {
   CSSProperties,
   FC,
-  MouseEvent,
+  ImgHTMLAttributes,
   useContext,
-  useRef
+  useRef,
+  useState
 } from 'react';
 
 import {
@@ -15,18 +17,35 @@ import {
   MouseEventMethod,
   PointPosType
 } from '@/types';
-import { $, fakeTsIntStyle, getPointStyle } from '@/utils';
-import calculateComponentPositionAndSize from '@/utils/calculateComponentPositonAndSize';
+import { $, getComponentStyle, getPointStyle, transformStyle } from '@/utils';
 
 import ComponentDataContext from '../context/component-data';
 import ContextMenuContext from '../context/context-menu';
 
-interface ShapeProps {
-  prefixCls?: string;
-  index: number;
-  component: ComponentType;
-  style: CSSProperties;
-  defaultStyle: CSSProperties;
+/**
+ * 加载相应组件
+ * @param component
+ */
+function generateComponent(component: ComponentType) {
+  const props = {
+    ...component.props,
+    style: getComponentStyle(component.style)
+  };
+  switch (component.name) {
+    case 'r-button':
+      return <Button {...props}>{component.label}</Button>;
+    case 'r-input':
+      return <Input {...props} />;
+    case 'r-img': {
+      return (
+        <img
+          draggable="false"
+          {...(props as ImgHTMLAttributes<HTMLImageElement>)}
+          alt={component.label}
+        />
+      );
+    }
+  }
 }
 
 // 8个光标点
@@ -41,27 +60,35 @@ const SHAPE_POINTS: PointPosType[] = [
   'l'
 ];
 
-const Shape: FC<ShapeProps> = ({
-  style,
-  index,
-  defaultStyle,
-  prefixCls,
-  component,
-  children
-}) => {
+interface ShapeProps {
+  prefixCls?: string;
+  index: number;
+  originalComponent: ComponentType;
+}
+
+const Shape: FC<ShapeProps> = ({ index, prefixCls, originalComponent }) => {
   const { componentState, componentDispatch } =
     useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
   const { curComponentId } = componentState;
 
+  const [component, setComponent] = useState<ComponentType>(originalComponent);
+
   // 画布的实例
   const editorRef = useRef($('#editor'));
+
+  const onSyncData = debounce((pos: CSSProperties) => {
+    componentDispatch({
+      type: 'setComponentStyle',
+      payload: { style: pos, index }
+    });
+  }, 100);
 
   const onShapeMouseDown: DragEventMethod = e => {
     e.stopPropagation();
     componentDispatch({ type: 'setClick', payload: true });
     componentDispatch({ type: 'setCurComponentId', payload: component.id });
-    const pos = { ...defaultStyle };
+    const pos = { ...component.style };
     // 拖拽起点的 xy 坐标
     const startY = e.clientY;
     const startX = e.clientX;
@@ -75,10 +102,9 @@ const Shape: FC<ShapeProps> = ({
       // 当前最新的 xy 坐标减去最开始的 xy 坐标，加上起始位置 xy 坐标
       pos.top = currY - startY + startTop;
       pos.left = currX - startX + startLeft;
-      componentDispatch({
-        type: 'setComponentStyle',
-        payload: { style: pos, index }
-      });
+
+      setComponent({ ...component, style: pos });
+      onSyncData(pos);
     };
 
     const up = () => {
@@ -98,86 +124,11 @@ const Shape: FC<ShapeProps> = ({
     menuDispatch({ type: 'hide' });
   };
 
-  const onPointMouseDown = (
-    point: PointPosType,
-    e: MouseEvent<HTMLDivElement>
-  ) => {
-    componentDispatch({ type: 'setClick', payload: true });
-
-    e.stopPropagation();
-    e.preventDefault();
-
-    const style = { ...defaultStyle };
-    const { width, height, top, left } = fakeTsIntStyle(style);
-
-    // 组件宽高比
-    const proportion = width / height;
-
-    // 组件中心点
-    const center = {
-      x: left + width / 2,
-      y: top + height / 2
-    };
-
-    const editorRectInfo = editorRef.current?.getBoundingClientRect();
-
-    // 当前点击坐标
-    const curPoint = {
-      x: e.clientX - (editorRectInfo?.left as number),
-      y: e.clientY - (editorRectInfo?.top as number)
-    };
-
-    // 获取对称点的坐标
-    const symmetricPoint = {
-      x: center.x - (curPoint.x - center.x),
-      y: center.y - (curPoint.y - center.y)
-    };
-
-    let isFirst = true;
-
-    const move = (moveEvent: any) => {
-      // 第一次点击时也会触发 move，所以会有“刚点击组件但未移动，组件的大小却改变了”的情况发生
-      // 因此第一次点击时不触发 move 事件
-      if (isFirst) {
-        isFirst = false;
-        return;
-      }
-      const curPosition = {
-        x: moveEvent.clientX - (editorRectInfo?.left as number),
-        y: moveEvent.clientY - (editorRectInfo?.top as number)
-      };
-      calculateComponentPositionAndSize(
-        point,
-        style,
-        curPosition,
-        proportion,
-        false,
-        {
-          center,
-          curPoint,
-          symmetricPoint
-        }
-      );
-      componentDispatch({
-        type: 'setComponentStyle',
-        payload: { style, index }
-      });
-    };
-
-    const up = () => {
-      document.removeEventListener('mousemove', move);
-      document.removeEventListener('mouseup', up);
-    };
-
-    document.addEventListener('mousemove', move);
-    document.addEventListener('mouseup', up);
-  };
-
   const handleMouseDownOnPoint = (point: PointPosType, downEvent: any) => {
     downEvent.stopPropagation();
     downEvent.preventDefault();
 
-    const pos = { ...defaultStyle };
+    const pos = { ...component.style };
     const height = Number(pos.height);
     const width = Number(pos.width);
     const top = Number(pos.top);
@@ -201,10 +152,8 @@ const Shape: FC<ShapeProps> = ({
       pos.left = left + (hasL ? disX : 0);
       pos.top = top + (hasT ? disY : 0);
 
-      componentDispatch({
-        type: 'setComponentStyle',
-        payload: { style: pos, index }
-      });
+      setComponent({ ...component, style: pos });
+      onSyncData(pos);
     };
 
     const up = () => {
@@ -217,8 +166,8 @@ const Shape: FC<ShapeProps> = ({
   };
 
   const shapePointEl = () => {
-    const width = defaultStyle.width as number;
-    const height = defaultStyle.height as number;
+    const width = component.style.width as number;
+    const height = component.style.height as number;
     return map(SHAPE_POINTS, point => {
       return (
         <div
@@ -234,12 +183,12 @@ const Shape: FC<ShapeProps> = ({
   return (
     <div
       className={prefixCls}
-      style={style}
+      style={transformStyle(component.style)}
       onClick={onShapeClick}
       onMouseDown={onShapeMouseDown}
     >
       {curComponentId === component.id && shapePointEl()}
-      {children}
+      {generateComponent(component)}
     </div>
   );
 };
