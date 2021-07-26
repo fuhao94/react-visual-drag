@@ -50,7 +50,7 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
   const [form] = Form.useForm();
   const firstRenderRef = useRef(true);
 
-  const reset = debounce(form.resetFields, 300);
+  const reset = debounce(form.resetFields, 100);
 
   useEffect(() => {
     let curComponentStyle: TObj = initialValues;

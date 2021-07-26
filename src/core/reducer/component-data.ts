@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash-es';
+
 import { ComponentType } from '@/types';
 
 /**
@@ -47,9 +49,9 @@ export default function reducer(
     }
     case 'setComponentStyle': {
       const { style, index } = payload;
-      const newComponents = [...state.componentData];
-      Object.assign(newComponents[index], { style });
-      return { ...state, componentData: newComponents };
+      const newState = cloneDeep(state);
+      Object.assign(newState.componentData[index], { style });
+      return newState;
     }
     case 'destroyComponent': {
       const newComponents = [...state.componentData];
