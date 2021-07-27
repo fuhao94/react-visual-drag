@@ -1,5 +1,7 @@
 import { CSSProperties } from 'react';
 
+import { cos, sin } from './translate';
+
 let id = 0;
 
 export function generateID() {
@@ -124,4 +126,38 @@ export function fakeTsIntStyle(style: CSSProperties) {
     },
     {}
   );
+}
+
+/**
+ * 获取一个组件旋转 rotate 后的样式
+ * @param pos
+ */
+export function getComponentRotatedStyle(pos: CSSProperties) {
+  const style = { ...pos };
+
+  const width = Number(style.width);
+  const height = Number(style.height);
+  const left = Number(style.left);
+  const top = Number(style.top);
+  const rotate = Number(style.rotate);
+
+  if (Number(style.rotate) !== 0) {
+    const newWidth = width * cos(rotate) + height * sin(rotate);
+    const diffX = (width - newWidth) / 2; // 旋转后范围变小是正值，变大是负值
+    style.left = diffX + left;
+    style.right = left + newWidth;
+
+    const newHeight = height * cos(rotate) + width * sin(rotate);
+    const diffY = (newHeight - height) / 2; // 始终是正
+    style.top = top - diffY;
+    style.bottom = top + newHeight;
+
+    style.width = newWidth;
+    style.height = newHeight;
+  } else {
+    style.bottom = top + height;
+    style.right = left + width;
+  }
+
+  return style;
 }

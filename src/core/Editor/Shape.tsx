@@ -7,6 +7,7 @@ import React, {
   FC,
   ImgHTMLAttributes,
   useContext,
+  useEffect,
   useRef,
   useState
 } from 'react';
@@ -15,6 +16,7 @@ import {
   ComponentType,
   DragEventMethod,
   MouseEventMethod,
+  MouseEventWithStyleMethod,
   PointPosType
 } from '@/types';
 import { $, getComponentStyle, getPointStyle, transformStyle } from '@/utils';
@@ -64,9 +66,17 @@ interface ShapeProps {
   prefixCls?: string;
   index: number;
   originalComponent: ComponentType;
+  onMove: MouseEventWithStyleMethod;
+  onDestroyMove: () => void;
 }
 
-const Shape: FC<ShapeProps> = ({ index, prefixCls, originalComponent }) => {
+const Shape: FC<ShapeProps> = ({
+  index,
+  prefixCls,
+  originalComponent,
+  onMove,
+  onDestroyMove
+}) => {
   const { componentState, componentDispatch } =
     useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
@@ -77,39 +87,50 @@ const Shape: FC<ShapeProps> = ({ index, prefixCls, originalComponent }) => {
   // 画布的实例
   const editorRef = useRef($('#editor'));
 
-  const onSyncData = debounce((pos: CSSProperties) => {
+  const onSyncData = debounce((style: CSSProperties) => {
     componentDispatch({
       type: 'setComponentStyle',
-      payload: { style: pos, index }
+      payload: { style, index }
     });
   }, 100);
 
   const onShapeMouseDown: DragEventMethod = e => {
     e.stopPropagation();
+
     componentDispatch({ type: 'setClick', payload: true });
-    componentDispatch({ type: 'setCurComponentId', payload: component.id });
-    const pos = { ...component.style };
+    componentDispatch({
+      type: 'setCurComponent',
+      payload: { id: component.id }
+    });
+
+    const style = { ...component.style };
     // 拖拽起点的 xy 坐标
     const startY = e.clientY;
     const startX = e.clientX;
     // 组件开始 xy 坐标
-    const startTop = Number(pos.top);
-    const startLeft = Number(pos.left);
+    const startTop = Number(style.top);
+    const startLeft = Number(style.left);
 
     const move = (moveEvent: any) => {
       const currX = moveEvent.clientX;
       const currY = moveEvent.clientY;
       // 当前最新的 xy 坐标减去最开始的 xy 坐标，加上起始位置 xy 坐标
-      pos.top = currY - startY + startTop;
-      pos.left = currX - startX + startLeft;
+      style.top = currY - startY + startTop;
+      style.left = currX - startX + startLeft;
 
-      setComponent({ ...component, style: pos });
-      onSyncData(pos);
+      setComponent({ ...component, style });
+      onSyncData(style);
+
+      // 配合吸附线-显示
+      onMove(e, style);
     };
 
     const up = () => {
       document.removeEventListener('mousemove', move);
       document.removeEventListener('mouseup', up);
+
+      // 配合吸附线-销毁
+      onDestroyMove();
     };
 
     document.addEventListener('mousemove', move);
@@ -124,7 +145,7 @@ const Shape: FC<ShapeProps> = ({ index, prefixCls, originalComponent }) => {
     menuDispatch({ type: 'hide' });
   };
 
-  const handleMouseDownOnPoint = (point: PointPosType, downEvent: any) => {
+  const onPointMouseDown = (point: PointPosType, downEvent: any) => {
     downEvent.stopPropagation();
     downEvent.preventDefault();
 
@@ -174,7 +195,7 @@ const Shape: FC<ShapeProps> = ({ index, prefixCls, originalComponent }) => {
           className={`${prefixCls}-point`}
           style={getPointStyle(point, { width, height })}
           key={point}
-          onMouseDown={e => handleMouseDownOnPoint(point, e)}
+          onMouseDown={e => onPointMouseDown(point, e)}
         />
       );
     });

@@ -1,16 +1,15 @@
 import './index.less';
 
 import { map } from 'lodash-es';
-import React, { FC, useContext } from 'react';
+import React, { FC, MouseEvent, useContext, useRef } from 'react';
 
-import { MouseEventMethod } from '@/types';
-import { transformStyle } from '@/utils';
+import { MouseEventMethod, MouseEventWithStyleMethod } from '@/types';
 
 import ComponentDataContext from '../context/component-data';
 import ContextMenuContext from '../context/context-menu';
 import ContextMenu from './ContextMenu';
 import Grid from './Grid';
-import MarkLine from './MarkLine';
+import MarkLine, { MarkLineRefProps } from './MarkLine';
 import Shape from './Shape';
 
 interface EditorProps {
@@ -20,8 +19,9 @@ interface EditorProps {
 const Editor: FC<EditorProps> = ({ prefixCls }) => {
   const { componentState } = useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
+  const markLineRef = useRef<MarkLineRefProps>(null);
 
-  const { componentData } = componentState;
+  const { componentData, curComponentId } = componentState;
 
   const onContextMenu: MouseEventMethod = e => {
     e.stopPropagation();
@@ -43,6 +43,13 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
     menuDispatch({ type: 'setPosition', payload: { left, top } });
   };
 
+  const onShapeMove: MouseEventWithStyleMethod = (e, style) => {
+    markLineRef.current?.showLine(style);
+  };
+  const onShapeDestroyMove = () => {
+    markLineRef.current?.hideLine();
+  };
+
   return (
     <div className={prefixCls} id="editor" onContextMenu={onContextMenu}>
       <Grid />
@@ -53,13 +60,15 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
             key={component.id}
             index={index}
             originalComponent={component}
+            onMove={onShapeMove}
+            onDestroyMove={onShapeDestroyMove}
           />
         );
       })}
 
       <ContextMenu />
 
-      <MarkLine />
+      <MarkLine ref={markLineRef} />
     </div>
   );
 };

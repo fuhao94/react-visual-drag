@@ -47,7 +47,7 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
           height: 32,
           rotate: 0,
           opacity: 1,
-          top: 250,
+          top: 40,
           left: 230
         }
       }
@@ -88,7 +88,10 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
     if (!isClickComponent) {
       // FIXME 需要先执行右键操作再取消选择组件 被迫来个异步操作
       setTimeout(() => {
-        componentDispatch({ type: 'setCurComponentId', payload: -1 });
+        componentDispatch({
+          type: 'setCurComponent',
+          payload: { id: -1 }
+        });
       }, 0);
     }
     if (e.button !== 2) {

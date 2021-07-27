@@ -30,6 +30,11 @@ export type DragEventMethod = (e: DragEvent<HTMLDivElement> | any) => void;
 
 export type MouseEventMethod = (e: MouseEvent<HTMLDivElement> | any) => void;
 
+export type MouseEventWithStyleMethod = (
+  e: MouseEvent<HTMLDivElement> | any,
+  style: CSSProperties
+) => void;
+
 export type CalculateComponentMethod = (
   style: any,
   curPosition: any,

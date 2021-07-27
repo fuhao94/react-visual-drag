@@ -16,7 +16,7 @@ export type ComponentDataReducerActionType =
   | 'setComponentData'
   | 'setComponentStyle'
   | 'destroyComponent'
-  | 'setCurComponentId'
+  | 'setCurComponent'
   | 'setClick'
   | 'undo'
   | 'redo'
@@ -64,10 +64,10 @@ export default function reducer(
       }
       return { ...state, componentData: newComponents };
     }
-    case 'setCurComponentId':
+    case 'setCurComponent':
       return {
         ...state,
-        curComponentId: payload
+        curComponentId: payload.id
       };
     case 'setClick':
       return { ...state, isClickComponent: payload };
