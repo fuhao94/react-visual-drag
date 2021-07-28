@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash-es';
+import { CSSProperties } from 'react';
 
 import { ComponentType } from '@/types';
 
@@ -11,6 +12,7 @@ import { ComponentType } from '@/types';
  * 撤销
  * 重做
  * 保存快照
+ * 修改当前组件位移
  * */
 export type ComponentDataReducerActionType =
   | 'setComponentData'
@@ -20,7 +22,8 @@ export type ComponentDataReducerActionType =
   | 'setClick'
   | 'undo'
   | 'redo'
-  | 'recordSnapshot';
+  | 'recordSnapshot'
+  | 'setCurComponentDragShift';
 
 export interface ComponentDataReducerAction {
   type: ComponentDataReducerActionType;
@@ -36,6 +39,8 @@ export interface ComponentDataReducerState {
   isClickComponent: boolean;
   snapshots: ComponentType[][];
   snapshotIndex: number;
+  /** 当前需要组件需要操作的样式 */
+  dragShiftStyle: CSSProperties;
 }
 
 export default function reducer(
@@ -68,6 +73,11 @@ export default function reducer(
       return {
         ...state,
         curComponentId: payload.id
+      };
+    case 'setCurComponentDragShift':
+      return {
+        ...state,
+        dragShiftStyle: payload
       };
     case 'setClick':
       return { ...state, isClickComponent: payload };

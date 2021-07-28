@@ -59,7 +59,8 @@ function decideIsNearly(dragValue: number, targetValue: number) {
 
 const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
   ({ prefixCls }, ref) => {
-    const { componentState } = useContext(ComponentDataContext);
+    const { componentState, componentDispatch } =
+      useContext(ComponentDataContext);
     const { curComponentId, componentData } = componentState;
     const [lineStatus, setLineStatus] = useState(INIT_LINE_STATUS);
     const [lineStyle, setLineStyle] = useState(INIT_LINE_STYLE);
@@ -181,6 +182,11 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
               [line]: isNearly
                 ? { ...newLineStyle[line as LineMap], [key]: lineShift }
                 : {}
+            });
+
+            componentDispatch({
+              type: 'setCurComponentDragShift',
+              payload: { [key]: dragShift }
             });
           });
         });

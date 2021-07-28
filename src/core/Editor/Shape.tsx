@@ -1,7 +1,7 @@
 import './index.less';
 
 import { Button, Input } from 'antd';
-import { debounce, map } from 'lodash-es';
+import { debounce, isEmpty, isEqual, map, merge } from 'lodash-es';
 import React, {
   CSSProperties,
   FC,
@@ -12,6 +12,7 @@ import React, {
   useState
 } from 'react';
 
+import { usePrevious } from '@/hooks/use-previous';
 import {
   ComponentType,
   DragEventMethod,
@@ -80,7 +81,9 @@ const Shape: FC<ShapeProps> = ({
   const { componentState, componentDispatch } =
     useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
-  const { curComponentId } = componentState;
+  const { curComponentId, dragShiftStyle } = componentState;
+
+  const preDragShiftStyle = usePrevious(dragShiftStyle);
 
   const [component, setComponent] = useState<ComponentType>(originalComponent);
 
@@ -93,6 +96,11 @@ const Shape: FC<ShapeProps> = ({
       payload: { style, index }
     });
   }, 100);
+
+  const onChangeShapeStyle = (style: CSSProperties) => {
+    setComponent({ ...component, style });
+    onSyncData(style);
+  };
 
   const onShapeMouseDown: DragEventMethod = e => {
     e.stopPropagation();
@@ -118,9 +126,7 @@ const Shape: FC<ShapeProps> = ({
       style.top = currY - startY + startTop;
       style.left = currX - startX + startLeft;
 
-      setComponent({ ...component, style });
-      onSyncData(style);
-
+      onChangeShapeStyle(style);
       // 配合吸附线-显示
       onMove(e, style);
     };
@@ -173,8 +179,7 @@ const Shape: FC<ShapeProps> = ({
       pos.left = left + (hasL ? disX : 0);
       pos.top = top + (hasT ? disY : 0);
 
-      setComponent({ ...component, style: pos });
-      onSyncData(pos);
+      onChangeShapeStyle(pos);
     };
 
     const up = () => {
@@ -200,6 +205,22 @@ const Shape: FC<ShapeProps> = ({
       );
     });
   };
+
+  /**
+   * 吸附事件处理器
+   */
+  useEffect(() => {
+    if (
+      component.id === curComponentId &&
+      !isEmpty(dragShiftStyle) &&
+      !isEqual(dragShiftStyle, preDragShiftStyle)
+    ) {
+      const style = merge(component.style, dragShiftStyle);
+      onChangeShapeStyle(style);
+      // 吸附完成进行重置操作
+      componentDispatch({ type: 'setCurComponentDragShift', payload: {} });
+    }
+  }, [dragShiftStyle]);
 
   return (
     <div

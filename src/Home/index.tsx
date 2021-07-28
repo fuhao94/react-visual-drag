@@ -55,7 +55,8 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
     isClickComponent: false,
     snapshots: [],
     snapshotIndex: -1,
-    curComponentId: -1
+    curComponentId: -1,
+    dragShiftStyle: {}
   });
   const [menuState, menuDispatch] = useReducer(contextReducer, {
     visible: false,

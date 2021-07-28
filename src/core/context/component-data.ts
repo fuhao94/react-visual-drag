@@ -17,7 +17,8 @@ const Context = createContext<ComponentDataContextType>({
     isClickComponent: false,
     snapshots: [],
     snapshotIndex: -1,
-    curComponentId: -1
+    curComponentId: -1,
+    dragShiftStyle: {}
   }
 });
 
