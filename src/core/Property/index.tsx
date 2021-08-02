@@ -1,5 +1,6 @@
 import { Card, Form, Input, Select, Tabs } from 'antd';
-import { debounce, find, join, map } from 'lodash-es';
+import { FormProps } from 'antd/es/form';
+import { debounce, find, findIndex, join, map, omit } from 'lodash-es';
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 
 import { TObj } from '@/types';
@@ -26,6 +27,8 @@ const initialValues = {
   label: undefined
 };
 
+const propFields = ['label'];
+
 const renderFormItem = map(propertyConfigs, config => {
   const { componentName, props, ...restProps } = config;
   let component;
@@ -44,13 +47,33 @@ const renderFormItem = map(propertyConfigs, config => {
 });
 
 const Property: FC<PropertyProps> = ({ prefixCls }) => {
-  const { componentState } = useContext(ComponentDataContext);
+  const { componentState, curComponentIndex, componentDispatch } =
+    useContext(ComponentDataContext);
   const { curComponentId, componentData, snapshots } = componentState;
   const [initial, setInitial] = useState<Record<string, any>>(initialValues);
   const [form] = Form.useForm();
   const firstRenderRef = useRef(true);
 
   const reset = debounce(form.resetFields, 100);
+
+  const setComponentContext = debounce(config => {
+    componentDispatch({
+      type: 'setComponentProps',
+      payload: { index: curComponentIndex, config }
+    });
+  }, 1000);
+
+  const onValuesChange: FormProps['onValuesChange'] = (
+    changedValues,
+    values
+  ) => {
+    const { label } = values;
+    const curStyle = omit(values, propFields);
+    if (curComponentIndex > -1) {
+      const style = { ...componentData[curComponentIndex].style, ...curStyle };
+      setComponentContext({ label, style });
+    }
+  };
 
   useEffect(() => {
     let curComponentStyle: TObj = initialValues;
@@ -78,14 +101,19 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
     <div className={prefixCls}>
       <Tabs defaultActiveKey="property">
         <TabPane forceRender tab="属性" key="property">
-          <Form
-            colon={false}
-            form={form}
-            labelCol={{ span: 4 }}
-            initialValues={initial}
-          >
-            {renderFormItem}
-          </Form>
+          {curComponentId > -1 ? (
+            <Form
+              colon={false}
+              form={form}
+              labelCol={{ span: 4 }}
+              initialValues={initial}
+              onValuesChange={onValuesChange}
+            >
+              {renderFormItem}
+            </Form>
+          ) : (
+            '请选择组件'
+          )}
         </TabPane>
         <TabPane tab="快照" key="animation">
           {map(snapshots, (snapshot, index) => {

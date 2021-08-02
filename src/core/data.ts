@@ -27,7 +27,17 @@ export const COMPONENT_LIST = (() => {
       props: {},
       style: {
         width: 100,
-        height: 32
+        height: 32,
+        borderWidth: 1,
+        borderColor: '',
+        borderRadius: '',
+        fontSize: 14,
+        fontWeight: 500,
+        lineHeight: '',
+        letterSpacing: 0,
+        textAlign: '',
+        color: '',
+        backgroundColor: ''
       }
     },
     {

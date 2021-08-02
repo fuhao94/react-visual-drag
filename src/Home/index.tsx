@@ -1,7 +1,7 @@
 import './index.less';
 
-import { cloneDeep } from 'lodash-es';
-import React, { FC, useReducer } from 'react';
+import { cloneDeep, findIndex } from 'lodash-es';
+import React, { FC, useMemo, useReducer } from 'react';
 
 import { COMPONENT_LIST } from '@/core/data';
 import { DragEventMethod } from '@/types';
@@ -55,14 +55,19 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
     isClickComponent: false,
     snapshots: [],
     snapshotIndex: -1,
-    curComponentId: -1,
+    curComponentId: 1,
     dragShiftStyle: {}
   });
   const [menuState, menuDispatch] = useReducer(contextReducer, {
     visible: false,
     position: { left: 0, top: 0 }
   });
-  const { componentData, isClickComponent } = componentState;
+  const { componentData, isClickComponent, curComponentId } = componentState;
+
+  const curComponentIndex = useMemo(
+    () => findIndex(componentData, ['id', curComponentId]),
+    [componentData, curComponentId]
+  );
 
   const onDrop: DragEventMethod = e => {
     e.preventDefault();
@@ -104,6 +109,7 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
     <div className={prefixCls}>
       <ComponentDataContext.Provider
         value={{
+          curComponentIndex,
           componentState,
           componentDispatch
         }}

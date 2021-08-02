@@ -16,6 +16,7 @@ import { ComponentType } from '@/types';
  * */
 export type ComponentDataReducerActionType =
   | 'setComponentData'
+  | 'setComponentProps'
   | 'setComponentStyle'
   | 'destroyComponent'
   | 'setCurComponent'
@@ -51,6 +52,12 @@ export default function reducer(
   switch (type) {
     case 'setComponentData': {
       return { ...state, componentData: payload };
+    }
+    case 'setComponentProps': {
+      const { config, index } = payload;
+      const componentData = cloneDeep(state.componentData);
+      Object.assign(componentData[index], { ...config });
+      return { ...state, componentData };
     }
     case 'setComponentStyle': {
       const { style, index } = payload;

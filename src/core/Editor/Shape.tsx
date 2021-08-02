@@ -1,7 +1,7 @@
 import './index.less';
 
 import { Button, Input } from 'antd';
-import { debounce, isEmpty, isEqual, map, merge } from 'lodash-es';
+import { debounce, findIndex, isEmpty, isEqual, map, merge } from 'lodash-es';
 import React, {
   CSSProperties,
   FC,
@@ -78,10 +78,10 @@ const Shape: FC<ShapeProps> = ({
   onMove,
   onDestroyMove
 }) => {
-  const { componentState, componentDispatch } =
+  const { componentState, curComponentIndex, componentDispatch } =
     useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
-  const { curComponentId, dragShiftStyle } = componentState;
+  const { curComponentId, dragShiftStyle, componentData } = componentState;
 
   const preDragShiftStyle = usePrevious(dragShiftStyle);
 
@@ -221,6 +221,16 @@ const Shape: FC<ShapeProps> = ({
       componentDispatch({ type: 'setCurComponentDragShift', payload: {} });
     }
   }, [dragShiftStyle]);
+
+  useEffect(() => {
+    if (
+      curComponentId === component.id &&
+      !isEmpty(componentData) &&
+      curComponentIndex > -1
+    ) {
+      setComponent(componentData[curComponentIndex]);
+    }
+  }, [componentData]);
 
   return (
     <div
