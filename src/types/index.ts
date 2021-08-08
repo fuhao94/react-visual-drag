@@ -11,12 +11,20 @@ export interface ComponentStyle {
   left?: number;
 }
 
+export type ComponentTypeEventKey = 'message' | 'redirect';
+
+export interface ComponentTypeEvent {
+  key: ComponentTypeEventKey;
+  value: string;
+}
+
 export interface ComponentType {
   id?: number;
   name: string;
   label: string;
   props: HTMLAttributes<HTMLInputElement>;
   style: CSSProperties;
+  events?: ComponentTypeEvent[];
 }
 
 export interface ContextMenuPosition {

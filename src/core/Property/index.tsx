@@ -7,7 +7,7 @@ import { TObj } from '@/types';
 
 import ComponentDataContext from '../context/component-data';
 import { propertyConfigs } from './data';
-
+import Event from './Event';
 const { Item: FormItem } = Form;
 const { TabPane } = Tabs;
 
@@ -126,7 +126,7 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
           })}
         </TabPane>
         <TabPane tab="事件" key="event">
-          事件
+          <Event />
         </TabPane>
       </Tabs>
     </div>

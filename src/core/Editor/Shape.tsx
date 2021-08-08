@@ -29,7 +29,7 @@ import ContextMenuContext from '../context/context-menu';
  * 加载相应组件
  * @param component
  */
-function generateComponent(component: ComponentType) {
+export function generateComponent(component: ComponentType) {
   const props = {
     ...component.props,
     style: getComponentStyle(component.style)

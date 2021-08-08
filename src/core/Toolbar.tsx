@@ -47,12 +47,18 @@ const Toolbar: FC<ToolbarProps> = ({
     componentDispatch({ type: 'undo' });
   };
 
+  /**
+   * 打开预览模式
+   */
+  const onPreview = () =>
+    componentDispatch({ type: 'setPreview', payload: true });
+
   return (
     <header className={prefixCls}>
       <Space>
         <Button onClick={onUndo}>撤销</Button>
         <Button onClick={onRestart}>重做</Button>
-        <Button>预览</Button>
+        <Button onClick={onPreview}>预览</Button>
         <Button onClick={onSave}>保存</Button>
       </Space>
     </header>

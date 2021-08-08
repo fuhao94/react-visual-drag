@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep, findIndex, includes } from 'lodash-es';
 import { CSSProperties } from 'react';
 
 import { ComponentType } from '@/types';
@@ -13,6 +13,9 @@ import { ComponentType } from '@/types';
  * 重做
  * 保存快照
  * 修改当前组件位移
+ * 预览状态
+ * 添加事件
+ * 移除事件
  * */
 export type ComponentDataReducerActionType =
   | 'setComponentData'
@@ -24,7 +27,10 @@ export type ComponentDataReducerActionType =
   | 'undo'
   | 'redo'
   | 'recordSnapshot'
-  | 'setCurComponentDragShift';
+  | 'setCurComponentDragShift'
+  | 'setPreview'
+  | 'createEvents'
+  | 'removeEvents';
 
 export interface ComponentDataReducerAction {
   type: ComponentDataReducerActionType;
@@ -42,13 +48,25 @@ export interface ComponentDataReducerState {
   snapshotIndex: number;
   /** 当前需要组件需要操作的样式 */
   dragShiftStyle: CSSProperties;
+  preview: boolean;
 }
+
+const needIndexTypes = ['destroyComponent', 'createEvents', 'removeEvents'];
 
 export default function reducer(
   state: ComponentDataReducerState,
   action: ComponentDataReducerAction
 ) {
   const { type, payload } = action;
+  let curComponentIndex = -1;
+
+  if (includes(needIndexTypes, type)) {
+    curComponentIndex = findIndex(state.componentData, [
+      'id',
+      state.curComponentId
+    ]);
+  }
+
   switch (type) {
     case 'setComponentData': {
       return { ...state, componentData: payload };
@@ -69,7 +87,7 @@ export default function reducer(
       const newComponents = [...state.componentData];
       let curIndex = payload;
       if (curIndex === undefined) {
-        curIndex = state.curComponentId;
+        curIndex = curComponentIndex;
       }
       if (curIndex > -1) {
         newComponents.splice(curIndex, 1);
@@ -111,6 +129,25 @@ export default function reducer(
       }
       return newState;
     }
+    case 'setPreview':
+      return { ...state, preview: payload };
+    case 'createEvents': {
+      const componentData = cloneDeep(state.componentData);
+      const curComponent = componentData[curComponentIndex];
+      curComponent.events = curComponent.events || [];
+      const replaceEventIndex = findIndex(curComponent.events, [
+        'key',
+        payload.key
+      ]);
+      if (replaceEventIndex > -1) {
+        curComponent.events.splice(replaceEventIndex, 1, payload);
+      } else {
+        curComponent.events.push(payload);
+      }
+      return { ...state, componentData };
+    }
+    case 'removeEvents':
+      return { ...state, preview: payload };
     default:
       throw new Error();
   }

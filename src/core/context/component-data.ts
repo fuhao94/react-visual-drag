@@ -17,6 +17,7 @@ const Context = createContext<ComponentDataContextType>({
   componentState: {
     componentData: [],
     isClickComponent: false,
+    preview: false,
     snapshots: [],
     snapshotIndex: -1,
     curComponentId: -1,

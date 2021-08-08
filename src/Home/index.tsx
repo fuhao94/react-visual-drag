@@ -22,6 +22,12 @@ interface HomeProps {
 
 const Demo: FC<HomeProps> = ({ prefixCls }) => {
   const [componentState, componentDispatch] = useReducer(componentReducer, {
+    isClickComponent: false,
+    preview: false,
+    snapshotIndex: -1,
+    curComponentId: 1,
+    dragShiftStyle: {},
+    snapshots: [],
     componentData: [
       {
         id: 0,
@@ -51,12 +57,7 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
           left: 230
         }
       }
-    ],
-    isClickComponent: false,
-    snapshots: [],
-    snapshotIndex: -1,
-    curComponentId: 1,
-    dragShiftStyle: {}
+    ]
   });
   const [menuState, menuDispatch] = useReducer(contextReducer, {
     visible: false,

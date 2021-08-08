@@ -1,8 +1,9 @@
 import './index.less';
 
 import { map } from 'lodash-es';
-import React, { FC, MouseEvent, useContext, useRef } from 'react';
+import React, { FC, useContext, useRef } from 'react';
 
+import Preview from '@/core/Editor/Preview';
 import { MouseEventMethod, MouseEventWithStyleMethod } from '@/types';
 
 import ComponentDataContext from '../context/component-data';
@@ -21,7 +22,7 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
   const { menuDispatch } = useContext(ContextMenuContext);
   const markLineRef = useRef<MarkLineRefProps>(null);
 
-  const { componentData, curComponentId } = componentState;
+  const { componentData } = componentState;
 
   const onContextMenu: MouseEventMethod = e => {
     e.stopPropagation();
@@ -69,6 +70,8 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
       <ContextMenu />
 
       <MarkLine ref={markLineRef} />
+
+      <Preview />
     </div>
   );
 };
