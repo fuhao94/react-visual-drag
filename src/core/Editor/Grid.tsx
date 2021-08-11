@@ -7,7 +7,7 @@ const Grid: FC = () => {
       width="100%"
       height="100%"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ position: 'absolute', top: 0, left: 0 }}
+      style={{ position: 'absolute', top: 0, left: 0, background: '#fff' }}
     >
       <defs>
         <pattern

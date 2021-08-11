@@ -21,7 +21,8 @@ const Context = createContext<ComponentDataContextType>({
     snapshots: [],
     snapshotIndex: -1,
     curComponentId: -1,
-    dragShiftStyle: {}
+    dragShiftStyle: {},
+    canvasStyle: {}
   }
 });
 

@@ -22,7 +22,7 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
   const { menuDispatch } = useContext(ContextMenuContext);
   const markLineRef = useRef<MarkLineRefProps>(null);
 
-  const { componentData } = componentState;
+  const { componentData, canvasStyle } = componentState;
 
   const onContextMenu: MouseEventMethod = e => {
     e.stopPropagation();
@@ -52,7 +52,12 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
   };
 
   return (
-    <div className={prefixCls} id="editor" onContextMenu={onContextMenu}>
+    <div
+      className={prefixCls}
+      style={canvasStyle}
+      id="editor"
+      onContextMenu={onContextMenu}
+    >
       <Grid />
 
       {map(componentData, (component, index) => {

@@ -19,7 +19,7 @@ interface PreviewProps {
 const Preview: FC<PreviewProps> = ({ prefixCls }) => {
   const { componentState, componentDispatch } =
     useContext(ComponentDataContext);
-  const { componentData, preview } = componentState;
+  const { componentData, preview, canvasStyle } = componentState;
 
   const onClose = () =>
     componentDispatch({ type: 'setPreview', payload: false });
@@ -29,8 +29,8 @@ const Preview: FC<PreviewProps> = ({ prefixCls }) => {
       visible={preview}
       footer={null}
       closable={false}
-      width={1200}
-      style={{ top: 50 }}
+      width={canvasStyle.width}
+      style={{ ...canvasStyle, top: 50 }}
       className={prefixCls}
       onCancel={onClose}
     >

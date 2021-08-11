@@ -1,6 +1,6 @@
 import './style/index.less';
 
-import { Button, Space } from 'antd';
+import { Button, InputNumber, Space } from 'antd';
 import React, { FC, useContext } from 'react';
 
 import ComponentDataContext from '../core/context/component-data';
@@ -53,13 +53,43 @@ const Toolbar: FC<ToolbarProps> = ({
   const onPreview = () =>
     componentDispatch({ type: 'setPreview', payload: true });
 
+  const onCanvasStyleChange = (key: string, value: number) =>
+    componentDispatch({ type: 'setCanvasStyle', payload: { [key]: value } });
+
   return (
     <header className={prefixCls}>
-      <Space>
-        <Button onClick={onUndo}>撤销</Button>
-        <Button onClick={onRestart}>重做</Button>
-        <Button onClick={onPreview}>预览</Button>
-        <Button onClick={onSave}>保存</Button>
+      <Space size={12}>
+        <Button size="small" onClick={onUndo}>
+          撤销
+        </Button>
+        <Button size="small" onClick={onRestart}>
+          重做
+        </Button>
+        <Button size="small" onClick={onPreview}>
+          预览
+        </Button>
+        <Button size="small" onClick={onSave}>
+          保存
+        </Button>
+
+        <Space>
+          画布大小
+          <InputNumber
+            size="small"
+            min={1}
+            max={1200}
+            defaultValue={1200}
+            onChange={value => onCanvasStyleChange('width', value)}
+          />
+          *
+          <InputNumber
+            size="small"
+            min={1}
+            max={760}
+            defaultValue={760}
+            onChange={value => onCanvasStyleChange('height', value)}
+          />
+        </Space>
       </Space>
     </header>
   );

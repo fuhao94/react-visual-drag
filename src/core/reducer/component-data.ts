@@ -16,6 +16,7 @@ import { ComponentType } from '@/types';
  * 预览状态
  * 添加事件
  * 移除事件
+ * 设置画布样式
  * */
 export type ComponentDataReducerActionType =
   | 'setComponentData'
@@ -30,7 +31,8 @@ export type ComponentDataReducerActionType =
   | 'setCurComponentDragShift'
   | 'setPreview'
   | 'createEvents'
-  | 'removeEvents';
+  | 'removeEvents'
+  | 'setCanvasStyle';
 
 export interface ComponentDataReducerAction {
   type: ComponentDataReducerActionType;
@@ -44,11 +46,16 @@ export interface ComponentDataReducerState {
   curComponentId: number;
   /** 是否是 active 组件 */
   isClickComponent: boolean;
+  /** 预览模式状态 */
+  preview: boolean;
+  /** 快照保存 */
   snapshots: ComponentType[][];
+  /** 当前属于哪级快照的索引 */
   snapshotIndex: number;
   /** 当前需要组件需要操作的样式 */
   dragShiftStyle: CSSProperties;
-  preview: boolean;
+  /** 画布的样式 默认只有宽高 */
+  canvasStyle: Record<string, number>;
 }
 
 const needIndexTypes = ['destroyComponent', 'createEvents', 'removeEvents'];
@@ -148,6 +155,8 @@ export default function reducer(
     }
     case 'removeEvents':
       return { ...state, preview: payload };
+    case 'setCanvasStyle':
+      return { ...state, canvasStyle: { ...state.canvasStyle, ...payload } };
     default:
       throw new Error();
   }

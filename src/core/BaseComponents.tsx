@@ -1,3 +1,8 @@
+import {
+  BoldOutlined,
+  FileImageOutlined,
+  FileTextOutlined
+} from '@ant-design/icons';
 import { Button, Col, Row } from 'antd';
 import { map } from 'lodash-es';
 import React, { FC } from 'react';
@@ -5,6 +10,18 @@ import React, { FC } from 'react';
 import { DragEventMethod } from '@/types';
 
 import { COMPONENT_LIST } from './data';
+
+const maps = {
+  'r-button': <BoldOutlined />,
+  'r-input': <FileTextOutlined />,
+  'r-img': <FileImageOutlined />
+};
+
+type MapKey = keyof typeof maps;
+
+function getIcon(name: MapKey) {
+  return maps[name];
+}
 
 const BaseComponents: FC = () => {
   /**
@@ -18,13 +35,13 @@ const BaseComponents: FC = () => {
   return (
     <div onDragStart={onDragStart}>
       <Row>
-        {map(COMPONENT_LIST, ({ label }, index) => (
+        {map(COMPONENT_LIST, ({ label, name }, index) => (
           <Col
-            span={10}
+            span={12}
             key={label}
-            style={{ marginBottom: 6, textAlign: 'center' }}
+            style={{ marginBottom: 12, textAlign: 'center' }}
           >
-            <Button data-index={index} draggable>
+            <Button icon={getIcon(name as MapKey)} data-index={index} draggable>
               {label}
             </Button>
           </Col>
