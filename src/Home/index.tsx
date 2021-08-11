@@ -25,7 +25,7 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
     isClickComponent: false,
     preview: false,
     snapshotIndex: -1,
-    curComponentId: 1,
+    curComponentId: -1,
     dragShiftStyle: {},
     canvasStyle: { width: 1200, height: 760 },
     snapshots: [],
