@@ -1,5 +1,6 @@
 {
   "name": "visual-drag",
+  "homepage": "/react-visual-drag",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -87,7 +88,8 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "publish": "bash deploy.sh"
   },
   "eslintConfig": {
     "extends": [
