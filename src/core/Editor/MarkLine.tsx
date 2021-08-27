@@ -3,7 +3,7 @@
  * @Date:   2021-07-23 11:00
  * @Author: zhangfuhao@mininglamp.com
  */
-import { forEach, includes, map, reduce } from 'lodash-es';
+import { find, forEach, includes, map, values } from 'lodash-es';
 import React, {
   CSSProperties,
   forwardRef,
@@ -66,6 +66,28 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
     const [lineStyle, setLineStyle] = useState(INIT_LINE_STYLE);
 
     /**
+     * 选择性的显示吸附线
+     * 处理多条吸附线共存的问题
+     * @param newLineStatus
+     */
+    const onChooseTheTureLine = (newLineStatus: typeof INIT_LINE_STATUS) => {
+      // const { xt, xc, xb, yl, yc, yr } = newLineStatus;
+      //
+      // if ((xt && xc && xb) || (yl && yc && yr)) {
+      //   if (xt && xc && xb) {
+      //     setLineStatus({ ...newLineStatus, xt: false, xc: true, xb: false });
+      //   }
+      //
+      //   if (yl && yc && yr) {
+      //     setLineStatus({ ...newLineStatus, yl: false, yc: true, yr: false });
+      //   }
+      //   return;
+      // }
+
+      setLineStatus(newLineStatus);
+    };
+
+    /**
      * 判断是否显示吸附线 && 计算吸附线坐标
      * @param style {CSSProperties}
      */
@@ -109,7 +131,7 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
             },
             {
               isNearly: decideIsNearly(
-                top + curComponentHalfHeight,
+                curComponentTop + curComponentHalfHeight,
                 top + componentHalfHeight
               ),
               line: 'xc',
@@ -170,7 +192,6 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
         const newLineStyle = { ...lineStyle };
         // 生成新的吸附线展示状态
         const newLineStatus = { ...INIT_LINE_STATUS };
-
         forEach(conditions, (condition, key) => {
           forEach(condition, lineItem => {
             const { line, isNearly, dragShift, lineShift } = lineItem;
@@ -184,6 +205,8 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
                 : {}
             });
 
+            // console.log(key, line, dragShift, lineShift);
+
             componentDispatch({
               type: 'setCurComponentDragShift',
               payload: { [key]: dragShift }
@@ -192,7 +215,7 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
         });
 
         setLineStyle(newLineStyle);
-        setLineStatus(newLineStatus);
+        onChooseTheTureLine(newLineStatus);
       });
     };
 

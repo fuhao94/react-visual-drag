@@ -2,7 +2,7 @@ import { CSSProperties } from 'react';
 
 import { cos, sin } from './translate';
 
-let id = 0;
+let id = 1;
 
 export function generateID() {
   return id++;

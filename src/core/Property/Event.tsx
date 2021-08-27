@@ -14,16 +14,20 @@ import { eventList } from '@/utils/events';
 import ComponentDataContext from '../context/component-data';
 
 const Event: FC = () => {
-  const { componentDispatch } = useContext(ComponentDataContext);
+  const { componentDispatch, componentState } =
+    useContext(ComponentDataContext);
+  const { curComponentId } = componentState;
   const [visible, setVisible] = useState(false);
   const [value, setValue] = useState('');
   const [tab, setTab] = useState<ComponentTypeEventKey>('message');
 
   return (
     <div>
-      <Button type="primary" onClick={() => setVisible(true)}>
-        添加事件
-      </Button>
+      {curComponentId > -1 && (
+        <Button type="primary" onClick={() => setVisible(true)}>
+          添加事件
+        </Button>
+      )}
 
       <Drawer
         width={320}
