@@ -1,7 +1,8 @@
 import './index.less';
 
+import { RedoOutlined } from '@ant-design/icons';
 import { Button, Input } from 'antd';
-import { debounce, findIndex, isEmpty, isEqual, map, merge } from 'lodash-es';
+import { debounce, isEmpty, isEqual, isNil, map, merge } from 'lodash-es';
 import React, {
   CSSProperties,
   FC,
@@ -212,6 +213,54 @@ const Shape: FC<ShapeProps> = ({
   };
 
   /**
+   * 按下旋转按钮处理器
+   * 核心在 Math.atan2 方法，返回一个旋转的弧度
+   * @param e
+   */
+  const onRotateMouseDown: DragEventMethod = e => {
+    componentDispatch({ type: 'setClick', payload: true });
+    e.preventDefault();
+    e.stopPropagation();
+
+    // 初始坐标和初始角度
+    const pos = { ...component.style } as any;
+    const startY = e.clientY;
+    const startX = e.clientX;
+    const startRotate = pos.rotate;
+    console.log(startX, startY, startRotate);
+
+    // 获取元素中心点位置
+    const rect = editorRef.current?.getBoundingClientRect();
+    const centerX = rect!.left + rect!.width / 2;
+    const centerY = rect!.top + rect!.height / 2;
+
+    // 旋转前的角度
+    const rotateDegreeBefore =
+      Math.atan2(startY - centerY, startX - centerX) / (Math.PI / 180);
+
+    const move = (moveEvent: any) => {
+      const curX = moveEvent.clientX;
+      const curY = moveEvent.clientY;
+      console.log(Math.atan2(curY - centerY, curX - centerX));
+      // 旋转后的角度
+      const rotateDegreeAfter =
+        Math.atan2(curY - centerY, curX - centerX) / (Math.PI / 180);
+
+      // 获取旋转的角度值
+      pos.rotate = Number(startRotate) + rotateDegreeAfter - rotateDegreeBefore;
+      onChangeShapeStyle(pos);
+    };
+
+    const up = () => {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    };
+
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  };
+
+  /**
    * 组件 active 状态下标记8个点
    * @return {ReactNode}
    */
@@ -254,6 +303,10 @@ const Shape: FC<ShapeProps> = ({
     ) {
       setComponent(componentData[curComponentIndex]);
     }
+
+    if (isNil(editorRef.current)) {
+      editorRef.current = $('#editor');
+    }
   }, [componentData]);
 
   return (
@@ -263,7 +316,15 @@ const Shape: FC<ShapeProps> = ({
       onClick={onShapeClick}
       onMouseDown={onShapeMouseDown}
     >
-      {curComponentId === component.id && shapePointEl()}
+      {curComponentId === component.id && (
+        <>
+          <RedoOutlined
+            className={`${prefixCls}-rotate`}
+            onMouseDown={onRotateMouseDown}
+          />
+          {shapePointEl()}
+        </>
+      )}
       {generateComponent(component)}
     </div>
   );
