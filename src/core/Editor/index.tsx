@@ -24,6 +24,10 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
 
   const { componentData, canvasStyle } = componentState;
 
+  /**
+   * 右击事件处理器
+   * @param e
+   */
   const onContextMenu: MouseEventMethod = e => {
     e.stopPropagation();
     e.preventDefault();
@@ -32,21 +36,34 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
     let top = e.nativeEvent.offsetY;
     let left = e.nativeEvent.offsetX;
 
+    // 右击的 target 是 SVG(背景图) 时候，target = <div class="visual-drag-editor" />
     while (target instanceof SVGElement) {
       target = target.parentNode;
     }
+
+    // 选中自定义组件时候，left、top 需要加上组件的 x,y 坐标
     while (!target.className.includes('visual-drag-editor')) {
       left += target.offsetLeft;
       top += target.offsetTop;
       target = target.parentNode;
     }
+
     menuDispatch({ type: 'show' });
     menuDispatch({ type: 'setPosition', payload: { left, top } });
   };
 
+  /**
+   * 显示吸附线并标记坐标
+   * @param e
+   * @param style
+   */
   const onShapeMove: MouseEventWithStyleMethod = (e, style) => {
     markLineRef.current?.showLine(style);
   };
+
+  /**
+   * 隐藏吸附线
+   */
   const onShapeDestroyMove = () => {
     markLineRef.current?.hideLine();
   };

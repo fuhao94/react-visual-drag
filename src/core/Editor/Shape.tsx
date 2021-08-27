@@ -26,8 +26,8 @@ import ComponentDataContext from '../context/component-data';
 import ContextMenuContext from '../context/context-menu';
 
 /**
- * 加载相应组件
- * @param component
+ * 根据组件类型，生成画布上的组件
+ * @param component {ComponentType}
  */
 export function generateComponent(component: ComponentType) {
   const props = {
@@ -82,14 +82,17 @@ const Shape: FC<ShapeProps> = ({
     useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
   const { curComponentId, dragShiftStyle, componentData } = componentState;
-
+  // 上一次吸附的样式
   const preDragShiftStyle = usePrevious(dragShiftStyle);
-
+  // 每个组件独立处理自己的配置，防止频繁刷新引起的卡顿
   const [component, setComponent] = useState<ComponentType>(originalComponent);
 
   // 画布的实例
   const editorRef = useRef($('#editor'));
 
+  /**
+   * 更新 store 的组件样式
+   */
   const onSyncData = debounce((style: CSSProperties) => {
     componentDispatch({
       type: 'setComponentStyle',
@@ -97,11 +100,19 @@ const Shape: FC<ShapeProps> = ({
     });
   }, 100);
 
+  /**
+   * 样式更改
+   * @param style
+   */
   const onChangeShapeStyle = (style: CSSProperties) => {
     setComponent({ ...component, style });
     onSyncData(style);
   };
 
+  /**
+   * 组件按下鼠标事件处理器(开始拖拽)
+   * @param e
+   */
   const onShapeMouseDown: DragEventMethod = e => {
     e.stopPropagation();
 
@@ -143,6 +154,10 @@ const Shape: FC<ShapeProps> = ({
     document.addEventListener('mouseup', up);
   };
 
+  /**
+   * 点击事件处理器
+   * @param e
+   */
   const onShapeClick: MouseEventMethod = e => {
     // 阻止向父组件冒泡
     e.stopPropagation();
@@ -151,6 +166,11 @@ const Shape: FC<ShapeProps> = ({
     menuDispatch({ type: 'hide' });
   };
 
+  /**
+   * 8个点按下鼠标事件处理器
+   * @param point
+   * @param downEvent
+   */
   const onPointMouseDown = (point: PointPosType, downEvent: any) => {
     downEvent.stopPropagation();
     downEvent.preventDefault();
@@ -191,6 +211,10 @@ const Shape: FC<ShapeProps> = ({
     document.addEventListener('mouseup', up);
   };
 
+  /**
+   * 组件 active 状态下标记8个点
+   * @return {ReactNode}
+   */
   const shapePointEl = () => {
     const width = component.style.width as number;
     const height = component.style.height as number;

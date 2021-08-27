@@ -1,6 +1,6 @@
 import { Card, Form, Input, Select, Tabs } from 'antd';
 import { FormProps } from 'antd/es/form';
-import { debounce, find, findIndex, join, map, omit } from 'lodash-es';
+import { debounce, find, join, map, omit } from 'lodash-es';
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 
 import { TObj } from '@/types';
@@ -29,6 +29,10 @@ const initialValues = {
 
 const propFields = ['label'];
 
+/**
+ * 渲染不同类型的组件
+ * @return {ReactNode}
+ */
 const renderFormItem = map(propertyConfigs, config => {
   const { componentName, props, ...restProps } = config;
   let component;
@@ -56,6 +60,9 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
 
   const reset = debounce(form.resetFields, 100);
 
+  /**
+   * 改变组件的属性值
+   */
   const setComponentContext = debounce(config => {
     componentDispatch({
       type: 'setComponentProps',
@@ -63,6 +70,11 @@ const Property: FC<PropertyProps> = ({ prefixCls }) => {
     });
   }, 1000);
 
+  /**
+   * 表单值处理
+   * @param changedValues
+   * @param values
+   */
   const onValuesChange: FormProps['onValuesChange'] = (
     changedValues,
     values

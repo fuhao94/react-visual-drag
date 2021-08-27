@@ -31,7 +31,7 @@ const Toolbar: FC<ToolbarProps> = ({
   };
 
   /**
-   * 重做事件处理
+   * 重做事件处理器
    */
   const onRestart = () => {
     onReload?.();
@@ -41,7 +41,7 @@ const Toolbar: FC<ToolbarProps> = ({
   };
 
   /**
-   * 撤销事件处理
+   * 撤销事件处理器
    */
   const onUndo = () => {
     componentDispatch({ type: 'undo' });
@@ -53,6 +53,11 @@ const Toolbar: FC<ToolbarProps> = ({
   const onPreview = () =>
     componentDispatch({ type: 'setPreview', payload: true });
 
+  /**
+   * 改变画布大小事件处理器
+   * @param key
+   * @param value
+   */
   const onCanvasStyleChange = (key: string, value: number) =>
     componentDispatch({ type: 'setCanvasStyle', payload: { [key]: value } });
 

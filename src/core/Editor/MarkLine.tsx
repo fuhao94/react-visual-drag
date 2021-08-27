@@ -205,8 +205,6 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
                 : {}
             });
 
-            // console.log(key, line, dragShift, lineShift);
-
             componentDispatch({
               type: 'setCurComponentDragShift',
               payload: { [key]: dragShift }
@@ -219,6 +217,9 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
       });
     };
 
+    /**
+     * 像外暴露处理吸附线方法
+     */
     useImperativeHandle(ref, () => ({
       showLine,
       hideLine: () => setLineStatus(INIT_LINE_STATUS)

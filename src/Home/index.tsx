@@ -62,11 +62,16 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
   });
   const { componentData, isClickComponent, curComponentId } = componentState;
 
+  // active 组件的索引
   const curComponentIndex = useMemo(
     () => findIndex(componentData, ['id', curComponentId]),
     [componentData, curComponentId]
   );
 
+  /**
+   * 组件模板拖拽到画布的事件(添加组件)
+   * @param e {DragEvent<HTMLDivElement>}
+   */
   const onDrop: DragEventMethod = e => {
     e.preventDefault();
     e.stopPropagation();
@@ -82,12 +87,20 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
     });
   };
 
+  /**
+   * 基础组件拖动到画布中的事件(ps: 不可使用 onDragEnter)
+   * @param e {DragEvent<HTMLDivElement>}
+   */
   const onDragOver: DragEventMethod = e => {
     // 允许放置的条件
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
   };
 
+  /**
+   * 鼠标抬起事件
+   * @param e
+   */
   const onMouseUp: DragEventMethod = e => {
     if (!isClickComponent) {
       // FIXME 需要先执行右键操作再取消选择组件 被迫来个异步操作
@@ -98,6 +111,7 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
         });
       }, 0);
     }
+    // 右击操作
     if (e.button !== 2) {
       menuDispatch({ type: 'hide' });
     }
