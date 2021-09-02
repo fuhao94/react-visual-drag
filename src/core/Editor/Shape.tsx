@@ -227,7 +227,6 @@ const Shape: FC<ShapeProps> = ({
     const startY = e.clientY;
     const startX = e.clientX;
     const startRotate = pos.rotate;
-    console.log(startX, startY, startRotate);
 
     // 获取元素中心点位置
     const rect = editorRef.current?.getBoundingClientRect();
@@ -241,7 +240,6 @@ const Shape: FC<ShapeProps> = ({
     const move = (moveEvent: any) => {
       const curX = moveEvent.clientX;
       const curY = moveEvent.clientY;
-      console.log(Math.atan2(curY - centerY, curX - centerX));
       // 旋转后的角度
       const rotateDegreeAfter =
         Math.atan2(curY - centerY, curX - centerX) / (Math.PI / 180);

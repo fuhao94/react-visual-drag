@@ -1,7 +1,9 @@
+import { message } from 'antd';
 import { cloneDeep, findIndex, includes } from 'lodash-es';
 import { CSSProperties } from 'react';
 
 import { ComponentType } from '@/types';
+import { generateID } from '@/utils';
 
 /**
  * 保存组件数据源
@@ -27,6 +29,8 @@ export type ComponentDataReducerActionType =
   | 'setClick'
   | 'undo'
   | 'redo'
+  | 'copy'
+  | 'paste'
   | 'recordSnapshot'
   | 'setCurComponentDragShift'
   | 'setPreview'
@@ -56,9 +60,16 @@ export interface ComponentDataReducerState {
   dragShiftStyle: CSSProperties;
   /** 画布的样式 默认只有宽高 */
   canvasStyle: Record<string, number>;
+  /** 复制的数据 */
+  copyData?: ComponentType;
 }
 
-const needIndexTypes = ['destroyComponent', 'createEvents', 'removeEvents'];
+const needIndexTypes = [
+  'destroyComponent',
+  'createEvents',
+  'removeEvents',
+  'copy'
+];
 
 export default function reducer(
   state: ComponentDataReducerState,
@@ -122,6 +133,20 @@ export default function reducer(
     }
     case 'redo':
       return { ...state, componentData: [], snapshots: [], snapshotIndex: 0 };
+    case 'copy':
+      return { ...state, copyData: state.componentData[curComponentIndex] };
+    case 'paste': {
+      const data = cloneDeep(state.copyData);
+      if (!data) {
+        message.error('请选择组件');
+        return state;
+      }
+      Object.assign(data, {
+        style: { ...data.style, ...payload },
+        id: generateID()
+      });
+      return { ...state, componentData: [...state.componentData, data] };
+    }
     case 'recordSnapshot': {
       const newState = { ...state };
       newState.snapshots[++newState.snapshotIndex] = payload

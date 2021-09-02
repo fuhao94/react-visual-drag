@@ -18,7 +18,8 @@ interface EditorProps {
 }
 
 const Editor: FC<EditorProps> = ({ prefixCls }) => {
-  const { componentState } = useContext(ComponentDataContext);
+  const { componentState, componentDispatch } =
+    useContext(ComponentDataContext);
   const { menuDispatch } = useContext(ContextMenuContext);
   const markLineRef = useRef<MarkLineRefProps>(null);
 

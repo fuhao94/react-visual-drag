@@ -14,6 +14,21 @@ const ContextMenu: FC<ContextMenuProps> = ({ prefixCls }) => {
   const { menuState } = useContext(ContextMenuContext);
   const { visible, position } = menuState;
 
+  /**
+   * 删除操作
+   */
+  const onDestroy = () => componentDispatch({ type: 'destroyComponent' });
+
+  /**
+   * 复制操作
+   */
+  const onCopy = () => componentDispatch({ type: 'copy' });
+
+  /**
+   * 黏贴操作
+   */
+  const onPaste = () => componentDispatch({ type: 'paste', payload: position });
+
   return (
     <div
       className={prefixCls}
@@ -22,12 +37,9 @@ const ContextMenu: FC<ContextMenuProps> = ({ prefixCls }) => {
       <ul
         onMouseUp={() => componentDispatch({ type: 'setClick', payload: true })}
       >
-        <li>复制</li>
-        <li>粘贴</li>
-        <li>剪切</li>
-        <li onClick={() => componentDispatch({ type: 'destroyComponent' })}>
-          删除
-        </li>
+        <li onClick={onCopy}>复制</li>
+        <li onClick={onPaste}>粘贴</li>
+        <li onClick={onDestroy}>删除</li>
         <li>置顶</li>
         <li>置底</li>
         <li>上移</li>
