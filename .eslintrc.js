@@ -14,16 +14,10 @@ module.exports = {
     es6: true
   },
   rules: {
-    // "react-hooks/rules-of-hooks": "warn",
-    // "react-hooks/exhaustive-deps": "warn",
-    // 'simple-import-sort/imports': 'error',
-    // 'simple-import-sort/exports': 'error',
-    // 'sort-imports': 'off',
     '@typescript-eslint/naming-convention': 0,
     '@typescript-eslint/explicit-module-boundary-types': 0,
     'no-underscore-dangle': 0,
     'no-template-curly-in-string': 0,
-    // 'no-console': 2,
     'max-classes-per-file': ['error', 2], // https://cn.eslint.org/docs/rules/max-classes-per-file
     'max-params': ['error', 7],
     '@typescript-eslint/no-require-imports': 'off',
