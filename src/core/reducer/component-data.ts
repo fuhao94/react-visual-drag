@@ -13,6 +13,12 @@ import { generateID } from '@/utils';
  * 设置 active 状态
  * 撤销
  * 重做
+ * 复制
+ * 黏贴
+ * 置顶
+ * 置底
+ * 上移
+ * 下移
  * 保存快照
  * 修改当前组件位移
  * 预览状态
@@ -31,6 +37,10 @@ export type ComponentDataReducerActionType =
   | 'redo'
   | 'copy'
   | 'paste'
+  | 'top'
+  | 'bottom'
+  | 'up'
+  | 'down'
   | 'recordSnapshot'
   | 'setCurComponentDragShift'
   | 'setPreview'
@@ -68,8 +78,30 @@ const needIndexTypes = [
   'destroyComponent',
   'createEvents',
   'removeEvents',
-  'copy'
+  'bottom',
+  'copy',
+  'down',
+  'top',
+  'up'
 ];
+
+/**
+ * 替换下组件位置 up down top bottom 等操作
+ * @param components
+ * @param source
+ * @param target
+ */
+const replaceComponentsLocation = (
+  components: ComponentType[],
+  source: number,
+  target: number
+) => {
+  [components[source], components[target]] = [
+    components[target],
+    components[source]
+  ];
+  return components;
+};
 
 export default function reducer(
   state: ComponentDataReducerState,
@@ -146,6 +178,69 @@ export default function reducer(
         id: generateID()
       });
       return { ...state, componentData: [...state.componentData, data] };
+    }
+    case 'top': {
+      const newComponents = [...state.componentData];
+      // 容错处理
+      if (newComponents.length < 2) {
+        return state;
+      }
+      return {
+        ...state,
+        componentData: replaceComponentsLocation(
+          newComponents,
+          curComponentIndex,
+          newComponents.length - 1
+        )
+      };
+    }
+    case 'bottom': {
+      const newComponents = [...state.componentData];
+      // 容错处理
+      if (newComponents.length < 2) {
+        return state;
+      }
+      return {
+        ...state,
+        componentData: replaceComponentsLocation(
+          newComponents,
+          curComponentIndex,
+          0
+        )
+      };
+    }
+    case 'up': {
+      const newComponents = [...state.componentData];
+      // 容错处理
+      if (
+        newComponents.length < 2 ||
+        curComponentIndex === newComponents.length - 1
+      ) {
+        return state;
+      }
+      return {
+        ...state,
+        componentData: replaceComponentsLocation(
+          newComponents,
+          curComponentIndex,
+          curComponentIndex + 1
+        )
+      };
+    }
+    case 'down': {
+      const newComponents = [...state.componentData];
+      // 容错处理
+      if (newComponents.length < 2 || curComponentIndex === 0) {
+        return state;
+      }
+      return {
+        ...state,
+        componentData: replaceComponentsLocation(
+          newComponents,
+          curComponentIndex,
+          curComponentIndex - 1
+        )
+      };
     }
     case 'recordSnapshot': {
       const newState = { ...state };
