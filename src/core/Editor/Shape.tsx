@@ -134,7 +134,7 @@ const Shape: FC<ShapeProps> = ({
     const move = (moveEvent: any) => {
       const currX = moveEvent.clientX;
       const currY = moveEvent.clientY;
-      // 当前最新的 xy 坐标减去最开始的 xy 坐标，加上起始位置 xy 坐标
+      // 当前最新的 xy 坐标(基于document)减去最开始的 xy 坐标(基于document)，加上起始位置 xy 坐标(基于画布)
       style.top = currY - startY + startTop;
       style.left = currX - startX + startLeft;
 
@@ -169,8 +169,8 @@ const Shape: FC<ShapeProps> = ({
 
   /**
    * 8个点按下鼠标事件处理器
-   * @param point
-   * @param downEvent
+   * @param point 点位
+   * @param downEvent 事件
    */
   const onPointMouseDown = (point: PointPosType, downEvent: any) => {
     downEvent.stopPropagation();
@@ -193,6 +193,7 @@ const Shape: FC<ShapeProps> = ({
       const hasB = /b/.test(point);
       const hasL = /l/.test(point);
       const hasR = /r/.test(point);
+
       const newHeight = height + (hasT ? -disY : hasB ? disY : 0);
       const newWidth = width + (hasL ? -disX : hasR ? disX : 0);
       pos.height = newHeight > 0 ? newHeight : 0;

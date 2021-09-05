@@ -164,7 +164,15 @@ export default function reducer(
       return newState;
     }
     case 'redo':
-      return { ...state, componentData: [], snapshots: [], snapshotIndex: 0 };
+      if (state.snapshotIndex < state.snapshots.length - 1) {
+        const newSnapshotIndex = state.snapshotIndex + 1;
+        return {
+          ...state,
+          snapshotIndex: newSnapshotIndex,
+          componentData: state.snapshots[newSnapshotIndex]
+        };
+      }
+      return state;
     case 'copy':
       return { ...state, copyData: state.componentData[curComponentIndex] };
     case 'paste': {

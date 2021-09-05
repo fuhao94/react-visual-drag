@@ -86,7 +86,7 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
   };
 
   /**
-   * 获取选中区域
+   * 获取选中的组件
    * @return {ComponentType[]}
    */
   const getSelectedArea = () => {
@@ -114,6 +114,11 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
     );
   };
 
+  /**
+   * 创建组合区
+   * 1. 利用 getBoundingClientRect() 浏览器 API 获取每个组件相对于浏览器视口四个方向上的信息，也就是 left top right bottom。
+   * 2. 对比每个组件的这四个信息，取得选中区域的最左、最上、最右、最下四个方向的数值，从而得出一个能包含区域内所有组件的最小区域。
+   */
   const onCreateAreaGroup = async () => {
     const areaComponents = getSelectedArea();
 
