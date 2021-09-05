@@ -53,30 +53,6 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
           top: 86,
           left: 117
         }
-      },
-      {
-        id: 1,
-        name: 'r-button',
-        label: '按钮',
-        props: {},
-        style: {
-          width: 100,
-          height: 32,
-          borderWidth: 1,
-          borderColor: '',
-          borderRadius: '',
-          fontSize: 14,
-          fontWeight: 500,
-          lineHeight: '',
-          letterSpacing: 0,
-          textAlign: '',
-          color: '',
-          backgroundColor: '',
-          rotate: 0,
-          opacity: 1,
-          top: 130,
-          left: 150
-        }
       }
     ]
   });
