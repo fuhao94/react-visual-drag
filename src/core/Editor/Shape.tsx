@@ -309,6 +309,7 @@ const Shape: FC<ShapeProps> = ({
 
   return (
     <div
+      id={`component-${component.id}`}
       className={prefixCls}
       style={transformStyle(component.style)}
       onClick={onShapeClick}
