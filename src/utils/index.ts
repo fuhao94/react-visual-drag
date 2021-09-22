@@ -143,12 +143,14 @@ export function getComponentRotatedStyle(pos: CSSProperties) {
 
   if (Number(style.rotate) !== 0) {
     const newWidth = width * cos(rotate) + height * sin(rotate);
-    const diffX = (width - newWidth) / 2; // 旋转后范围变小是正值，变大是负值
+    // 旋转后范围变小是正值，变大是负值
+    const diffX = (width - newWidth) / 2;
     style.left = diffX + left;
     style.right = left + newWidth;
 
     const newHeight = height * cos(rotate) + width * sin(rotate);
-    const diffY = (newHeight - height) / 2; // 始终是正
+    // 始终是正
+    const diffY = (newHeight - height) / 2;
     style.top = top - diffY;
     style.bottom = top + newHeight;
 

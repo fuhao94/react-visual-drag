@@ -1,5 +1,7 @@
-// 角度转弧度
-// Math.PI = 180 度
+/**
+ * 角度转弧度（Math.PI = 180 度）
+ * @param angle 角度
+ */
 function angleToRadian(angle: number) {
   return (angle * Math.PI) / 180;
 }

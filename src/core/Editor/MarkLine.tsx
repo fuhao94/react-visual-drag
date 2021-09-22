@@ -92,7 +92,10 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
      * @param style {CSSProperties}
      */
     const showLine: MarkLineRefProps['showLine'] = style => {
+      // 获取旋转后的 hover 组件样式
       const curComponentStyle = getComponentRotatedStyle(style);
+
+      // hover 组件的属性
       const curComponentHalfWidth = Number(curComponentStyle.width) / 2;
       const curComponentHalfHeight = Number(curComponentStyle.height) / 2;
       const curComponentWidth = Number(curComponentStyle.width);
@@ -105,6 +108,7 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
       forEach(componentData, component => {
         // 吸附线只挂载在`主动吸附`的组件，当前组件属于`被吸附`
         if (component.id === curComponentId) return;
+        // 获取当前组件的旋转后样式
         const componentStyle = getComponentRotatedStyle(component.style);
         const width = Number(componentStyle.width);
         const height = Number(componentStyle.height);
@@ -118,9 +122,13 @@ const MarkLine = forwardRef<MarkLineRefProps, MarkLineProps>(
         const conditions = {
           top: [
             {
+              // 线段名称
               line: 'xt',
+              // 是否需要吸附
               isNearly: decideIsNearly(curComponentTop, top),
+              // 吸附的定位
               dragShift: top,
+              // 吸附线样式
               lineShift: top
             },
             {
