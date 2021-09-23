@@ -87,15 +87,16 @@ const needIndexTypes = [
 
 /**
  * 替换下组件位置 up down top bottom 等操作
- * @param components
+ * @param sourceComponents
  * @param source
  * @param target
  */
 const replaceComponentsLocation = (
-  components: ComponentType[],
+  sourceComponents: ComponentType[],
   source: number,
   target: number
 ) => {
+  const components: ComponentType[] = [...sourceComponents];
   [components[source], components[target]] = [
     components[target],
     components[source]

@@ -86,6 +86,8 @@ export function getPointStyle(
   let newLeft = 0;
   let newTop = 0;
 
+  // console.log(point);
+
   // 四个角的点
   if (point.length === 2) {
     newLeft = hasL ? 0 : width;

@@ -1,7 +1,7 @@
 import { message } from 'antd';
 
 // 编辑器自定义事件
-const events = {
+export const events = {
   redirect(url: string) {
     if (url) {
       window.location.href = url;
@@ -15,11 +15,11 @@ const events = {
   }
 };
 
-const mixins = {
+export const mixins = {
   methods: events
 };
 
-const eventList = [
+export const eventList = [
   {
     key: 'message',
     label: '消息提醒',
@@ -33,5 +33,3 @@ const eventList = [
     param: ''
   }
 ];
-
-export { eventList, events, mixins };

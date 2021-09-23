@@ -40,7 +40,7 @@ const Shape: FC<ShapeProps> = ({ prefixCls, component }) => {
       style={transformStyle(component.style)}
       onClick={onClick}
     >
-      {generateComponent(component)}
+      {generateComponent(component, 'preview')}
     </div>
   );
 };

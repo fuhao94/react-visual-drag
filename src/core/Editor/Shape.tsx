@@ -9,6 +9,7 @@ import React, {
   ImgHTMLAttributes,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState
 } from 'react';
@@ -28,18 +29,29 @@ import ContextMenuContext from '../context/context-menu';
 
 /**
  * 根据组件类型，生成画布上的组件
- * @param component {ComponentType}
+ * @param component {ComponentType} 组件json
+ * @param mode {'preview' | 'edit'} 预览模式 || 编辑模式
+ * @param onInputChange {(label: string) => void}
+ * @return {ReactNode}
  */
-export function generateComponent(component: ComponentType) {
+export function generateComponent(
+  component: ComponentType,
+  mode = 'edit',
+  onInputChange?: (label: string) => void
+) {
   const props = {
     ...component.props,
     style: getComponentStyle(component.style)
   };
+
   switch (component.name) {
     case 'r-button':
       return <Button {...props}>{component.label}</Button>;
     case 'r-input':
-      return <Input {...props} />;
+      if (mode === 'preview') return <span>{component.label}</span>;
+      return (
+        <Input {...props} onChange={e => onInputChange?.(e.target.value)} />
+      );
     case 'r-img': {
       return (
         <img
@@ -88,11 +100,16 @@ const Shape: FC<ShapeProps> = ({
   // 每个组件独立处理自己的配置，防止频繁刷新引起的卡顿
   const [component, setComponent] = useState<ComponentType>(originalComponent);
 
+  if (component.id === curComponentId) {
+    // console.log(component);
+  }
+
   // 画布的实例
   const editorRef = useRef($('#editor'));
 
   /**
    * 更新 store 的组件样式
+   * @param style {CSSProperties} 更新后样式
    */
   const onSyncData = debounce((style: CSSProperties) => {
     componentDispatch({
@@ -103,7 +120,7 @@ const Shape: FC<ShapeProps> = ({
 
   /**
    * 样式更改
-   * @param style
+   * @param style {CSSProperties} 更新后样式
    */
   const onChangeShapeStyle = (style: CSSProperties) => {
     setComponent({ ...component, style });
@@ -279,6 +296,17 @@ const Shape: FC<ShapeProps> = ({
   };
 
   /**
+   * 更新 input label
+   * @param label {string}
+   */
+  const onInputChange = debounce((label: string) => {
+    componentDispatch({
+      type: 'setComponentProps',
+      payload: { index: curComponentIndex, config: { label } }
+    });
+  }, 1000);
+
+  /**
    * 吸附事件处理器
    */
   useEffect(() => {
@@ -325,7 +353,7 @@ const Shape: FC<ShapeProps> = ({
           {shapePointEl()}
         </>
       )}
-      {generateComponent(component)}
+      {generateComponent(component, 'edit', onInputChange)}
     </div>
   );
 };

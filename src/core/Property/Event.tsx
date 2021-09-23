@@ -3,7 +3,7 @@
  * @Date:   2021-08-08 14:56
  * @Author: zhangfuhao@mininglamp.com
  */
-import { Button, Drawer, Input, Tabs } from 'antd';
+import { Button, Drawer, Input, message, Tabs } from 'antd';
 import React, { FC, useContext, useState } from 'react';
 const { TabPane } = Tabs;
 import { map } from 'lodash-es';
@@ -60,6 +60,9 @@ const Event: FC = () => {
                 value
               }
             });
+            setValue('');
+            message.success('事件添加成功');
+            setVisible(false);
           }}
         >
           确认

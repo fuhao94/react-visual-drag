@@ -60,7 +60,8 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
     visible: false,
     position: { left: 0, top: 0 }
   });
-  const { componentData, isClickComponent, curComponentId } = componentState;
+  const { componentData, isClickComponent, curComponentId, canvasStyle } =
+    componentState;
 
   // active 组件的索引
   const curComponentIndex = useMemo(
@@ -132,7 +133,7 @@ const Demo: FC<HomeProps> = ({ prefixCls }) => {
             <div className={`${prefixCls}-content-left`}>
               <BaseComponents />
             </div>
-            <div className={`${prefixCls}-content-wrapper`}>
+            <div className={`${prefixCls}-content-wrapper`} style={canvasStyle}>
               <div
                 className={`${prefixCls}-content-wrapper-canvas`}
                 onDrop={onDrop}

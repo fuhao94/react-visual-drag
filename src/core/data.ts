@@ -47,8 +47,8 @@ export const COMPONENT_LIST = (() => {
         src: require('@/assets/cat.jpeg').default
       },
       style: {
-        width: 114,
-        height: 200
+        width: 192,
+        height: 120
       }
     }
   ];

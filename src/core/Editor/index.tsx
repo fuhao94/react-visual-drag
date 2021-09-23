@@ -154,6 +154,7 @@ const Editor: FC<EditorProps> = ({ prefixCls }) => {
 
   /**
    * 编辑器区域内"鼠标按下"的事件处理
+   * @param e {DragEvent<HTMLDivElement>}
    */
   const onEditorMouseDown: DragEventMethod = e => {
     // 如果没有选中组件 在画布上点击时需要调用 e.preventDefault() 防止触发 drop 事件
