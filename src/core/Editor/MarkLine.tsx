@@ -1,7 +1,6 @@
 /**
  * 吸附线
  * @Date:   2021-07-23 11:00
- * @Author: zhangfuhao@mininglamp.com
  */
 import { find, forEach, includes, map, values } from 'lodash-es';
 import React, {

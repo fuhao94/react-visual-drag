@@ -1,7 +1,6 @@
 /**
  * 预览弹窗
  * @Date:   2021-08-08 17:01
- * @Author: zhangfuhao@mininglamp.com
  */
 import './index.less';
 

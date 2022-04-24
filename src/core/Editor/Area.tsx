@@ -1,7 +1,6 @@
 /**
  * Area
  * @Date:   2021-09-03 17:43
- * @Author: zhangfuhao@mininglamp.com
  */
 
 import React, { FC } from 'react';
