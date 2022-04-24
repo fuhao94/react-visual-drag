@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/react-visual-drag/static/css/main.0c465b58.chunk.css",
+    "main.js": "/react-visual-drag/static/js/main.eaf25c23.chunk.js",
+    "main.js.map": "/react-visual-drag/static/js/main.eaf25c23.chunk.js.map",
+    "runtime-main.js": "/react-visual-drag/static/js/runtime-main.8bc24709.js",
+    "runtime-main.js.map": "/react-visual-drag/static/js/runtime-main.8bc24709.js.map",
+    "static/css/2.e80b02f4.chunk.css": "/react-visual-drag/static/css/2.e80b02f4.chunk.css",
+    "static/js/2.ae68d418.chunk.js": "/react-visual-drag/static/js/2.ae68d418.chunk.js",
+    "static/js/2.ae68d418.chunk.js.map": "/react-visual-drag/static/js/2.ae68d418.chunk.js.map",
+    "index.html": "/react-visual-drag/index.html",
+    "static/css/2.e80b02f4.chunk.css.map": "/react-visual-drag/static/css/2.e80b02f4.chunk.css.map",
+    "static/css/main.0c465b58.chunk.css.map": "/react-visual-drag/static/css/main.0c465b58.chunk.css.map",
+    "static/js/2.ae68d418.chunk.js.LICENSE.txt": "/react-visual-drag/static/js/2.ae68d418.chunk.js.LICENSE.txt",
+    "static/media/cat.jpeg": "/react-visual-drag/static/media/cat.2fdfd017.jpeg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.8bc24709.js",
+    "static/css/2.e80b02f4.chunk.css",
+    "static/js/2.ae68d418.chunk.js",
+    "static/css/main.0c465b58.chunk.css",
+    "static/js/main.eaf25c23.chunk.js"
+  ]
+}
