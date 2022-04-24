@@ -1,7 +1,3 @@
-/**
- * 事件处理
- * @Date:   2021-08-08 14:56
- */
 import { Button, Drawer, Input, message, Tabs } from 'antd';
 import React, { FC, useContext, useState } from 'react';
 const { TabPane } = Tabs;

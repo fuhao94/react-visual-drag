@@ -1,8 +1,3 @@
-/**
- * Area
- * @Date:   2021-09-03 17:43
- */
-
 import React, { FC } from 'react';
 
 const prefixCls = 'visual-drag-area';

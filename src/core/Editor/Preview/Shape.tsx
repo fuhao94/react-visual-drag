@@ -1,7 +1,3 @@
-/**
- * Shape
- * @Date:   2021-08-08 17:16
- */
 import './index.less';
 
 import { find, forEach, isEmpty } from 'lodash-es';

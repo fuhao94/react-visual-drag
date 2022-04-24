@@ -1,7 +1,3 @@
-/**
- * 吸附线
- * @Date:   2021-07-23 11:00
- */
 import { find, forEach, includes, map, values } from 'lodash-es';
 import React, {
   CSSProperties,
