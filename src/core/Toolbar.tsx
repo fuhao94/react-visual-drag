@@ -84,7 +84,7 @@ const Toolbar: FC<ToolbarProps> = ({
             min={1}
             max={1200}
             defaultValue={1200}
-            onChange={value => onCanvasStyleChange('width', value)}
+            onChange={value => onCanvasStyleChange('width', value as number)}
           />
           *
           <InputNumber
@@ -92,7 +92,7 @@ const Toolbar: FC<ToolbarProps> = ({
             min={1}
             max={760}
             defaultValue={760}
-            onChange={value => onCanvasStyleChange('height', value)}
+            onChange={value => onCanvasStyleChange('height', value as number)}
           />
         </Space>
       </Space>
